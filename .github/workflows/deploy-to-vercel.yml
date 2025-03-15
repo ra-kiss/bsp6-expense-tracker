@@ -19,7 +19,7 @@ jobs:
       - name: Deploy to Vercel (if commit message contains '[deploy]')
         run: |
           if git log -1 --pretty=%B | grep -q '\[deploy\]'; then
-            vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+            vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
           else
             echo "Skipping deployment. No [deploy] tag in commit message."
           fi
