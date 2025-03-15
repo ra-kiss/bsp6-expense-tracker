@@ -1,0 +1,25 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main  # Change this if you want to deploy from another branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy to Vercel (if commit message contains '[deploy]')
+        run: |
+          if git log -1 --pretty=%B | grep -q '\[deploy\]'; then
+            vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            echo "Skipping deployment. No [deploy] tag in commit message."
+          fi
