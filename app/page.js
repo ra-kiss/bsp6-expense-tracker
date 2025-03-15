@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 export default function Home(){
   return (
     <div>
+      <p>TEST-SUCCESSFULLY DEPLOYED</p>
       <div className="fixed bottom-20 right-5 z-50">
         <Fab color="primary" aria-label="add">
           <AddIcon />
