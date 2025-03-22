@@ -14,8 +14,8 @@
 - [ ] Sort list by category
 - [ ] Filter list by time frame (e.g. last year, last month, last week)
 - [ ] Sort list by currency
-- [ ] Support only adding one transaction field in order to make a valid transaction
-- [ ] Support editing and deleting transactions
+- [x] Support only adding one transaction field in order to make a valid transaction
+- [x] Support editing and deleting transactions
 - [ ] Set up recurring expenses
 	- [ ] Allow users to define the frequency (daily, weekly, monthly, yearly)
 	- [ ] Notify user of upcoming recurring expenses in advance
