@@ -9,11 +9,13 @@
 - [ ] Display usage statistics: total spent, total saved, average expense by category, average expense by currency, most/least used category, most/least used currency
 
 ### Transactions
-- [ ] Show list of transactions with relevant details
-- [ ] Each transaction should display: currency, amount, date, category, and notes which can include images
-- [ ] Sort list by category
+- [x] Show list of transactions with relevant details
+- [x] Each transaction should display: currency, amount, date, category, and notes which can include images
+- [ ] Filter list by category
+- [ ] Filter list by currency
 - [ ] Filter list by time frame (e.g. last year, last month, last week)
-- [ ] Sort list by currency
+- [x] Sort list by value (asc./desc.)
+- [x] Sort list by time (asc./desc.)
 - [x] Support only adding one transaction field in order to make a valid transaction
 - [x] Support editing and deleting transactions
 - [ ] Set up recurring expenses
