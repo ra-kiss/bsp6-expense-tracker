@@ -86,7 +86,6 @@ export default function Home() {
 
       <div className="fixed bottom-20 right-5 z-50">
         <Fab color="primary" aria-label="add" onClick={() => setAddListEntryModalOpen(true)}>
-        {/* <Fab color="primary" aria-label="add" onClick={() => console.log(entries)}> */}
           <AddIcon />
         </Fab>
       </div>
