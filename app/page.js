@@ -22,8 +22,14 @@ import { useGlobal } from './components/GlobalContext';
 export default function Home() {
   const theme = useTheme();
   const { entries, setEntries } = useGlobal();
-  const [sort, setSort] = useState({"type": 'recency', "order": 'desc'})
+  const [sort, setSort] = useState({"type": 'recency', "order": 'desc'});
   const [addListEntryModalOpen, setAddListEntryModalOpen] = useState(false);
+
+  const [filter, setFilter] = useState({
+    "category": '',
+    "currency": '',
+    "date": ''
+  });
 
   useEffect(() => {
     sortEntries(entries, sort.type, sort.order);
@@ -44,6 +50,7 @@ export default function Home() {
 
   const parseDate = (dateString) => {
     const [day, month, year] = dateString.split('/').map(Number);
+    console.log(dateString, '\n', day, month, year);
     return new Date(year, month - 1, day); // month - 1 because JS months are 0-based
   };
 
@@ -68,10 +75,16 @@ export default function Home() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <TransactionsTopBar sortEntries={sortEntries}/>
+    <TransactionsTopBar sortEntries={sortEntries} setFilter={setFilter}/>
     <Box sx={{ ...theme.mixins.toolbar }} />
     <Box>
-      {entries.map((entry, index) => (
+      {entries
+      .filter(entry =>
+        Object.entries(filter).every(([key, value]) =>
+          value === '' || (key === "date" ? (parseDate(value) - parseDate(entry[key]) < 0) : (value.includes(entry[key])))
+        )
+      )
+      .map((entry, index) => (
         <ListEntry
           key={index}
           index={index}
@@ -86,6 +99,7 @@ export default function Home() {
 
       <div className="fixed bottom-20 right-5 z-50">
         <Fab color="primary" aria-label="add" onClick={() => setAddListEntryModalOpen(true)}>
+        {/* <Fab color="primary" aria-label="add" onClick={() => console.log(entries)}> */}
           <AddIcon />
         </Fab>
       </div>

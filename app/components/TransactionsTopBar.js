@@ -12,26 +12,31 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 
 import { useGlobal } from './GlobalContext';
 
+import FilterModal from "./FilterModal";
 
-export default function TransactionsTopBar({sortEntries}) {
-  const [anchorEl, setAnchorEl] = useState(null);
+
+export default function TransactionsTopBar({sortEntries, setFilter}) {
   const { entries } = useGlobal();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const handleClose = () => { setFilterModalOpen(false); }
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
   const handleSort = (type, order) => {
     sortEntries(entries, type, order);
-    handleClose();
+    handleCloseMenu();
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <FilterModal open={filterModalOpen} setFilter={setFilter} onClose={handleClose}/>
       <AppBar>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -41,7 +46,8 @@ export default function TransactionsTopBar({sortEntries}) {
           size="large"
           edge="end"
           color="inherit"
-          aria-label="sort"
+          aria-label="filter"
+          onClick={() => { setFilterModalOpen(true); }}
         >
           <FilterAltIcon />
         </IconButton>
@@ -49,7 +55,7 @@ export default function TransactionsTopBar({sortEntries}) {
             size="large"
             edge="end"
             color="inherit"
-            aria-label="filter"
+            aria-label="sort"
             onClick={handleMenu}
           >
             <SwapVertIcon />
@@ -67,7 +73,7 @@ export default function TransactionsTopBar({sortEntries}) {
             horizontal: 'right',
           }}
           open={Boolean(anchorEl)}
-          onClose={handleClose}
+          onClose={handleCloseMenu}
         >
           <MenuItem onClick={() => handleSort('recency', 'desc')}>Sort by Recency (desc.)</MenuItem>
           <MenuItem onClick={() => handleSort('recency', 'asc')}>Sort by Recency (asc.)</MenuItem>

@@ -11,9 +11,9 @@
 ### Transactions
 - [x] Show list of transactions with relevant details
 - [x] Each transaction should display: currency, amount, date, category, and notes which can include images
-- [ ] Filter list by category
-- [ ] Filter list by currency
-- [ ] Filter list by time frame (e.g. last year, last month, last week)
+- [x] Filter list by category
+- [x] Filter list by currency
+- [x] Filter list by time frame (e.g. last year, last month, last week)
 - [x] Sort list by value (asc./desc.)
 - [x] Sort list by time (asc./desc.)
 - [x] Support only adding one transaction field in order to make a valid transaction
