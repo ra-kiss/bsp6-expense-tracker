@@ -18,9 +18,10 @@
 - [x] Sort list by time (asc./desc.)
 - [x] Support only adding one transaction field in order to make a valid transaction
 - [x] Support editing and deleting transactions
-- [ ] Set up recurring expenses
-	- [ ] Allow users to define the frequency (daily, weekly, monthly, yearly)
+- [x] Set up recurring expenses
+	- [x] Allow users to define the frequency (daily, weekly, monthly, yearly)
 	- [ ] Notify user of upcoming recurring expenses in advance
+	- [ ] Allow users to edit recurring expenses
 
 ### Savings
 - [ ] Allow user to create new savings project with a target amount

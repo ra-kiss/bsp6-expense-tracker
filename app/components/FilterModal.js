@@ -78,7 +78,7 @@ export default function FilterModal({ open, onClose, setFilter }) {
   }
 
   const submitFilters = () => {
-    console.log(timeFilter, markedCategories, markedCurrencies);
+    // console.log(timeFilter, markedCategories, markedCurrencies);
     let date;
     const today = dayjs();
     if (timeFilter == 'day') {
@@ -144,6 +144,7 @@ export default function FilterModal({ open, onClose, setFilter }) {
             ))}
           </FormGroup>
         </FormControl>
+        <Divider variant="middle"/>
         <FormControl sx={{ m: 2 }} component="fieldset" variant="standard">
           <FormLabel component="legend">By categories</FormLabel>
           <FormGroup row>
