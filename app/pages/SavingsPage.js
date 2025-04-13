@@ -2,17 +2,23 @@
 
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
+import SavingsTopBar from '../components/SavingsTopBar';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function SavingsPage() {
   const theme = useTheme();
 
   return (
     <>
-      {/* Placeholder for a future SavingsTopBar */}
+      <SavingsTopBar/>
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box>
-        <h1>Savings Page</h1>
-        {/* Add savings-specific content here in the future */}
+        <div className="fixed bottom-20 right-5 z-50">
+          <Fab color="primary" aria-label="add" onClick={}>
+            <AddIcon />
+          </Fab>
+        </div>
       </Box>
     </>
   );

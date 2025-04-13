@@ -89,9 +89,7 @@ export default function TransactionsPage() {
     setEntries(sorted);
   };
 
-  const compareDates = (date,bounds) => {
-    // (parseDate(value) - parseDate(entry[key]) < 0)
-    
+  const compareDates = (date,bounds) => {    
     
     const [lower, upper] = bounds;
     console.log(lower, upper, date, (parseDate(date) >= parseDate(lower)), (parseDate(date) <= parseDate(upper)));
@@ -119,9 +117,9 @@ export default function TransactionsPage() {
         <AddListEntryModal open={addListEntryModalOpen} setOpen={setAddListEntryModalOpen} addEntry={addEntry} />
         <AddRecurringEntryModal open={addRecurringEntryModalOpen} setOpen={setAddRecurringEntryModalOpen} addRecurringEntry={addRecurringEntry} />
         <div className="fixed bottom-20 right-5 z-50">
-         <Fab sx={{ mr: 2 }} color="secondary" aria-label="add-recurring" size="medium" onClick={() => console.log(filter)}>
+         {/* <Fab sx={{ mr: 2 }} color="secondary" aria-label="add-recurring" size="medium" onClick={() => console.log(filter)}>
             <EventRepeatIcon />
-          </Fab>
+          </Fab> */}
           <Fab sx={{ mr: 2 }} color="primary" aria-label="add-recurring" size="medium" onClick={() => setAddRecurringEntryModalOpen(true)}>
             <EventRepeatIcon />
           </Fab>
