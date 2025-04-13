@@ -79,29 +79,42 @@ export default function FilterModal({ open, onClose, setFilter }) {
 
   const submitFilters = () => {
     // console.log(timeFilter, markedCategories, markedCurrencies);
-    let date;
+    let dateLower;
+    let dateUpper;
     const today = dayjs();
     if (timeFilter == 'day') {
       const yesterday = today.subtract(1, 'day');
-      date = yesterday;
+      const tomorrow = today.add(1, 'day');
+      dateLower = yesterday;
+      dateUpper = tomorrow;
     } else if (timeFilter == 'week') {
       const oneWeekAgo = today.subtract(7, 'day');
-      date = oneWeekAgo;
+      const oneWeekFromNow = today.add(7, 'day');
+      dateLower = oneWeekAgo;
+      dateUpper = oneWeekFromNow;
     } else if (timeFilter == 'month') {
       const oneMonthAgo = today.subtract(1, 'month');
-      date = oneMonthAgo;
+      const oneMonthFromNow = today.add(1, 'month');
+      dateLower = oneMonthAgo;
+      dateUpper = oneMonthFromNow;
     } else if (timeFilter == 'year') {
       const oneYearAgo = today.subtract(1, 'year');
-      date = oneYearAgo;
+      const oneYearFromNow = today.add(1, 'year');
+      dateLower = oneYearAgo;
+      dateUpper = oneYearFromNow;
     } else {
-      date = null;
+      dateLower = null;
+      dateUpper = null;
     }
-    const dateString = date ? `${date.date()}/${date.month() + 1}/${date.year()}` : '';
-    // console.log(dateString);
+    const lowerDateString = dateLower ? dayjs(dateLower).startOf('day').format('D/M/YYYY') : '';
+    const upperDateString = dateUpper ? dayjs(dateUpper).startOf('day').format('D/M/YYYY') : '';
+    const dateArr = (lowerDateString && upperDateString) ? [lowerDateString, upperDateString] : '';
+    console.log(dateLower, dateUpper);
+    console.log(lowerDateString, upperDateString, dateArr);
     setFilter({
       "category": markedCategories.length ? markedCategories : '',
       "currency": markedCurrencies.length ? markedCurrencies : '',
-      "date": dateString
+      "date": dateArr
     })
     onClose();
   }
