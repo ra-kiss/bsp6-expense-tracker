@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 
-import { useGlobal } from './GlobalContext';
+import { useGlobal } from '../GlobalContext';
 
 import FilterModal from "./FilterModal";
 

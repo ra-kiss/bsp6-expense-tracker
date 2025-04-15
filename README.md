@@ -24,7 +24,8 @@
 	- [ ] Allow users to edit recurring expenses
 
 ### Savings
-- [ ] Allow user to create new savings project with a target amount
+- [x] Allow user to create new savings project with a target amount
+- [ ] Allow user to edit savings projects
 - [ ] Automatically transfer leftover budget to savings goal at some interval (weekly, monthly) 
 - [ ] Display warnings when the savings goal is not on track (e.g. insufficient funds to meet the savings goal)
 - [ ] Warnings should be visible on all pages: it should be a persistent notification

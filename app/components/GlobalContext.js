@@ -9,6 +9,8 @@ export function GlobalProvider({ children }) {
   const [entries, setEntries] = useState([]);
   const [recurringEntries, setRecurringEntries] = useState([]);
 
+  const [savingsProjects, setSavingsProjects] = useState([]);
+
   const [currencies, setCurrencies] = useState([
     {
       value: '$ USD',
@@ -51,6 +53,7 @@ export function GlobalProvider({ children }) {
     <GlobalContext.Provider value={{ 
       entries, setEntries,
       recurringEntries, setRecurringEntries, 
+      savingsProjects, setSavingsProjects,
       currencies, setCurrencies, 
       categories, setCategories
        }}>

@@ -6,13 +6,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import MenuItem from '@mui/material/MenuItem';
 import { DateField } from '@mui/x-date-pickers/DateField';
-import { useGlobal } from './GlobalContext';
+import { useGlobal } from '../GlobalContext';
 import Decimal from 'decimal.js';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import RadioGroup from '@mui/material/RadioGroup';
-import Radio from '@mui/material/Radio';
-import FormLabel from '@mui/material/FormLabel';
 import dayjs from 'dayjs';
 
 const style = {
@@ -35,7 +30,7 @@ const boxStyle = {
   width: '100%'
 };
 
-export default function RecurringEntryModal({ open, onClose, onSubmit, initialValues, onDelete }) {
+export default function ListEntryModal({ open, onClose, onSubmit, initialValues, onDelete }) {
   const { currencies, categories } = useGlobal();
 
   const [valueInput, setValueInput] = useState(initialValues.value);
@@ -43,7 +38,6 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
   const [categoryInput, setCategoryInput] = useState(initialValues.category);
   const [dateInput, setDateInput] = useState(initialValues.date);
   const [notesInput, setNotesInput] = useState(initialValues.notes);
-  const [repeatInput, setRepeatInput] = useState(initialValues.repeat);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -53,7 +47,6 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
       setCategoryInput(initialValues.category);
       setDateInput(initialValues.date);
       setNotesInput(initialValues.notes);
-      setRepeatInput(initialValues.repeat);
     }
   }, [open, initialValues]);
 
@@ -76,14 +69,13 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
       category: categoryInput,
       date: dateString,
       notes: notesInput,
-      repeat: repeatInput
     };
     onSubmit(entry);
     onClose();
   };
 
   // Determine title and whether to show delete button based on onDelete prop
-  const title = onDelete ? "Edit Recurring Transaction" : "Add Recurring Transaction";
+  const title = onDelete ? "Edit Transaction" : "Add Transaction";
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -141,21 +133,6 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
         </Box>
         <Box sx={boxStyle}>
           <TextField
-            select
-            label="Repeat"
-            variant="outlined"
-            value={repeatInput}
-            onChange={(e) => setRepeatInput(e.target.value)}
-            sx={{ width: '100%' }}
-          >
-            <MenuItem value="day">Daily</MenuItem>
-            <MenuItem value="week">Weekly</MenuItem>
-            <MenuItem value="month">Monthly</MenuItem>
-            <MenuItem value="year">Yearly</MenuItem>
-          </TextField>
-        </Box>
-        <Box sx={boxStyle}>
-          <TextField
             label="Notes"
             variant="outlined"
             multiline
@@ -165,19 +142,6 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
             sx={{ width: '100%' }} // Stretch to full width
           />
         </Box>
-        {/* <FormControl component="fieldset" variant="standard">
-          <FormLabel id="demo-radio-buttons-group-label">By time</FormLabel>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            name="radio-buttons-group"
-            row
-          >
-            <FormControlLabel control={<Radio checked={repeat === "day"} onClick={() => handleRepeatChange("day")}/>} label="Today" />
-            <FormControlLabel control={<Radio checked={repeat === "week"} onClick={() => handleRepeatChange("week")}/>} label="This Week" />
-            <FormControlLabel control={<Radio checked={repeat === "month"} onClick={() => handleRepeatChange("month")}/>} label="This Month" />
-            <FormControlLabel control={<Radio checked={repeat === "year"} onClick={() => handleRepeatChange("year")}/>} label="This Year" />
-          </RadioGroup>
-        </FormControl> */}
         <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button variant="contained" onClick={handleSubmit}>
             Submit

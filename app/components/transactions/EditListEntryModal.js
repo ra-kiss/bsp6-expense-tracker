@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ListEntryModal from './ListEntryModal';
-import { useGlobal } from './GlobalContext';
+import { useGlobal } from '../GlobalContext';
 import dayjs from 'dayjs';
 
 function parseDate(dateString) {

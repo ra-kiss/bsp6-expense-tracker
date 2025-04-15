@@ -6,11 +6,11 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import { useTheme } from '@mui/material/styles';
-import ListEntry from "../components/ListEntry";
-import RecurringEntry from "../components/RecurringEntry";
-import AddListEntryModal from "../components/AddListEntryModal";
-import AddRecurringEntryModal from "../components/AddRecurringEntryModal";
-import TransactionsTopBar from '../components/TransactionsTopBar';
+import ListEntry from "../components/transactions/ListEntry";
+import RecurringEntry from "../components/transactions/RecurringEntry";
+import AddListEntryModal from "../components/transactions/AddListEntryModal";
+import AddRecurringEntryModal from "../components/transactions/AddRecurringEntryModal";
+import TransactionsTopBar from '../components/transactions/TransactionsTopBar';
 import { useGlobal } from '../components/GlobalContext';
 import dayjs from 'dayjs';
 

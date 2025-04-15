@@ -13,7 +13,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 
-import { useGlobal } from './GlobalContext';
+import { useGlobal } from '../GlobalContext';
 import dayjs from 'dayjs';
 
 
