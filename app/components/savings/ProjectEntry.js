@@ -6,14 +6,20 @@ import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import CircularProgressWithLabel from '../CircluarProgressWithLabel';
+import EditProjectEntryModal from "./EditProjectEntryModal";
 
 export default function ProjectEntry({ index, entryValues }) {
   const { value, currency, goal, label } = entryValues;
 
+  const [editProjectEntryModalOpen, setEditProjectEntryModalOpen] = useState(false);
+
   return (
     <div className="mx-2 my-2">
+      <EditProjectEntryModal open={editProjectEntryModalOpen} setOpen={setEditProjectEntryModalOpen} entryValues={entryValues} index={index}/>
       <Card variant="outlined">
-        <CardActionArea>
+        <CardActionArea onClick={() => {
+          setEditProjectEntryModalOpen(true);
+        }}>
           <CardContent>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
