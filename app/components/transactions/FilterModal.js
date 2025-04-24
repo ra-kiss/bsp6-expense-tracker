@@ -7,6 +7,9 @@ import Modal from '@mui/material/Modal';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
@@ -44,31 +47,19 @@ export default function FilterModal({ open, onClose, setFilter }) {
   const [markedCategories, setMarkedCategories] = useState([]);
 
   const handleCategoryChange = (event, categoryValue) => {
-    setMarkedCategories((prev) =>
-      event.target.checked
-        ? [...prev, categoryValue] // Add when checked
-        : prev.filter((value) => value !== categoryValue) // Remove when unchecked
-    );
+    setMarkedCategories(categoryValue);
   };
 
   const [markedCurrencies, setMarkedCurrencies] = useState([]);
 
   const handleCurrencyChange = (event, currencyValue) => {
-    setMarkedCurrencies((prev) =>
-      event.target.checked
-        ? [...prev, currencyValue] // Add when checked
-        : prev.filter((value) => value !== currencyValue) // Remove when unchecked
-    );
+    setMarkedCurrencies(currencyValue);
   };
 
-  const [timeFilter, setTimeFilter] = useState(null);
+  const [timeFilter, setTimeFilter] = useState('');
 
   const handleTimeFilterChange = (value) => {
-    if (value === timeFilter) {
-      setTimeFilter(null);
-    } else {
-      setTimeFilter(value);
-    }
+    setTimeFilter(value);
   };
 
   const clearFilters = () => {
@@ -83,25 +74,23 @@ export default function FilterModal({ open, onClose, setFilter }) {
     let dateUpper;
     const today = dayjs();
     if (timeFilter == 'day') {
-      const yesterday = today.subtract(1, 'day');
-      const tomorrow = today.add(1, 'day');
-      dateLower = yesterday;
-      dateUpper = tomorrow;
+      dateLower = today;
+      dateUpper = today;
     } else if (timeFilter == 'week') {
-      const oneWeekAgo = today.subtract(7, 'day');
-      const oneWeekFromNow = today.add(7, 'day');
-      dateLower = oneWeekAgo;
-      dateUpper = oneWeekFromNow;
+      dateLower = today.startOf('week');
+      dateUpper = today.endOf('week');
+    } else if (timeFilter == '14d') {
+      dateLower = today.subtract(14, 'day');
+      dateUpper = today;
     } else if (timeFilter == 'month') {
-      const oneMonthAgo = today.subtract(1, 'month');
-      const oneMonthFromNow = today.add(1, 'month');
-      dateLower = oneMonthAgo;
-      dateUpper = oneMonthFromNow;
+      dateLower = today.startOf('month');
+      dateUpper = today.endOf('month');
+    } else if (timeFilter == '30d') {
+      dateLower = today.subtract(30, 'day');
+      dateUpper = today;
     } else if (timeFilter == 'year') {
-      const oneYearAgo = today.subtract(1, 'year');
-      const oneYearFromNow = today.add(1, 'year');
-      dateLower = oneYearAgo;
-      dateUpper = oneYearFromNow;
+      dateLower = today.startOf('year');
+      dateUpper = today.endOf('year');
     } else {
       dateLower = null;
       dateUpper = null;
@@ -125,55 +114,57 @@ export default function FilterModal({ open, onClose, setFilter }) {
         <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
           Filter Settings
         </Typography>
-        <FormControl sx={{ m: 2 }} component="fieldset" variant="standard">
-          <FormLabel id="demo-radio-buttons-group-label">By time</FormLabel>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            name="radio-buttons-group"
-            row
+        <FormControl fullWidth>
+          <InputLabel id="time-select-label">By time</InputLabel>
+          <Select
+            id="time-select"
+            value={timeFilter}
+            label="By time"
+            onChange={(event) => handleTimeFilterChange(event.target.value)}
           >
-            <FormControlLabel control={<Radio checked={timeFilter === "day"} onClick={() => handleTimeFilterChange("day")}/>} label="Today" />
-            <FormControlLabel control={<Radio checked={timeFilter === "week"} onClick={() => handleTimeFilterChange("week")}/>} label="This Week" />
-            <FormControlLabel control={<Radio checked={timeFilter === "month"} onClick={() => handleTimeFilterChange("month")}/>} label="This Month" />
-            <FormControlLabel control={<Radio checked={timeFilter === "year"} onClick={() => handleTimeFilterChange("year")}/>} label="This Year" />
-          </RadioGroup>
+            <MenuItem value="day">Today</MenuItem>
+            <MenuItem value="week">This Week</MenuItem>
+            <MenuItem value="14d">Last 14 Days</MenuItem>
+            <MenuItem value="month">This Month</MenuItem>
+            <MenuItem value="30d">Last 30 Days</MenuItem>
+            <MenuItem value="year">This Year</MenuItem>
+            <MenuItem value="">All time</MenuItem>
+          </Select>
         </FormControl>
         {/* <Radio onClick={() => console.log(markedCurrencies)}></Radio> */}
-        <Divider variant="middle"/>
-        <FormControl sx={{ m: 2 }} component="fieldset" variant="standard">
-          <FormLabel component="legend">By currencies</FormLabel>
-          <FormGroup row>
+        <Divider sx={{ my: 1, opacity: 0 }} variant="middle"/>
+        <FormControl fullWidth>
+          <InputLabel id="currency-select-label">By currencies</InputLabel>
+          <Select
+            multiple
+            id="currency-select"
+            value={markedCurrencies}
+            label="By currencies"
+            onChange={(event) => handleCurrencyChange(event, event.target.value)}
+          >
             {currencies.map((currency) => (
-              <FormControlLabel
-                key={currency.value}
-                control={
-                  <Checkbox
-                    checked={markedCurrencies.includes(currency.value)}
-                    onChange={(event) => handleCurrencyChange(event, currency.value)}
-                  />
-                }
-                label={currency.label}
-              />
+              <MenuItem key={currency.value} value={currency.value}>
+                {currency.label}
+              </MenuItem>
             ))}
-          </FormGroup>
+          </Select>
         </FormControl>
-        <Divider variant="middle"/>
-        <FormControl sx={{ m: 2 }} component="fieldset" variant="standard">
-          <FormLabel component="legend">By categories</FormLabel>
-          <FormGroup row>
+        <Divider sx={{ my: 1, opacity: 0 }} variant="middle"/>
+        <FormControl fullWidth>
+          <InputLabel id="currency-select-label">By categories</InputLabel>
+          <Select
+            id="currency-select"
+            multiple
+            value={markedCategories}
+            label="By categories"
+            onChange={(event) => handleCategoryChange(event, event.target.value)}
+          >
             {categories.map((category) => (
-              <FormControlLabel
-                key={category.value}
-                control={
-                  <Checkbox
-                    checked={markedCategories.includes(category.value)}
-                    onChange={(event) => handleCategoryChange(event, category.value)}
-                  />
-                }
-                label={category.label}
-              />
+              <MenuItem key={category.value} value={category.value}>
+                {category.label}
+              </MenuItem>
             ))}
-          </FormGroup>
+          </Select>
         </FormControl>
         <Box sx={{ mt: 3, display: 'flex', flexDirection: 'row-reverse' }}>
           <Button variant="contained" onClick={submitFilters}>

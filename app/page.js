@@ -8,7 +8,7 @@ import SavingsPage from "./pages/SavingsPage";
 import Navbar from "./components/Navbar";
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState('savings');
+  const [currentPage, setCurrentPage] = useState('transactions');
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

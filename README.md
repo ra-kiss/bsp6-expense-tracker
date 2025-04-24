@@ -29,7 +29,7 @@
 - [ ] Automatically transfer leftover budget to savings goal at some interval (weekly, monthly) 
 - [ ] Display warnings when the savings goal is not on track (e.g. insufficient funds to meet the savings goal)
 - [ ] Warnings should be visible on all pages: it should be a persistent notification
-- [ ] Allow users to see how much they have saved so far comparatively to the goal
+- [x] Allow users to see how much they have saved so far comparatively to the goal
 
 
 ### Currencies
