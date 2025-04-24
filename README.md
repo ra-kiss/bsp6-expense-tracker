@@ -33,12 +33,13 @@
 
 
 ### Currencies
-- [ ] Display live values of all supported currencies
+- [ ] Display live comparison values w.r.t main currency for all currencies
 - [ ] Allow user to add custom currency with custom exchange rate w.r.t. their chosen main currency
+- [ ] (Optionally) Allow user to filter currencies
 
 ### Options
 - [ ] Set or change main currency 
-- [ ] Add or modify categories 
+- [ ] Add or remove categories 
 - [ ] Allow export and importing of transactions, savings goals, and custom currencies
 - [ ] (Optionally) Implement PIN for security 
 - [ ] (Optionally) Add language preference

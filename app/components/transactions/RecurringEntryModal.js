@@ -22,7 +22,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  color: 'black',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
@@ -148,10 +147,10 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
             onChange={(e) => setRepeatInput(e.target.value)}
             sx={{ width: '100%' }}
           >
-            <MenuItem value="day">Daily</MenuItem>
-            <MenuItem value="week">Weekly</MenuItem>
-            <MenuItem value="month">Monthly</MenuItem>
-            <MenuItem value="year">Yearly</MenuItem>
+            <MenuItem value="day">Every Day</MenuItem>
+            <MenuItem value="week">Every 7 Days</MenuItem>
+            <MenuItem value="month">Every 30 Days</MenuItem>
+            <MenuItem value="year">Every Year</MenuItem>
           </TextField>
         </Box>
         <Box sx={boxStyle}>

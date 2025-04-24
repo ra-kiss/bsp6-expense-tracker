@@ -57,8 +57,8 @@ export default function TransactionsPage() {
     let nextDate;
     switch (repeat) {
       case 'day': nextDate = dayjsDate.add(1, 'day'); break;
-      case 'week': nextDate = dayjsDate.add(1, 'week'); break;
-      case 'month': nextDate = dayjsDate.add(1, 'month'); break;
+      case 'week': nextDate = dayjsDate.add(7, 'day'); break;
+      case 'month': nextDate = dayjsDate.add(30, 'day'); break;
       case 'year': nextDate = dayjsDate.add(1, 'year'); break;
       default: nextDate = dayjsDate;
     }

@@ -27,7 +27,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  color: 'black',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
@@ -111,7 +110,7 @@ export default function FilterModal({ open, onClose, setFilter }) {
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style}>
-        <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
           Filter Settings
         </Typography>
         <FormControl fullWidth>

@@ -16,7 +16,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  color: 'black',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
@@ -59,13 +58,13 @@ export default function ProjectEntryModal({ open, onClose, onSubmit, initialValu
   };
 
   const handleSubmit = () => {
-    const formattedValue = new Decimal(valueInput || "0").toFixed(2);
-    const formattedGoal = new Decimal(goalInput || "0").toFixed(2);
+    const formattedValue = new Decimal(valueInput ? valueInput : "0").toFixed(2);
+    const formattedGoal = new Decimal(goalInput ? goalInput : "0").toFixed(2);
     const entry = {
       value: formattedValue,
       currency: currencyInput,
       goal: formattedGoal,
-      label: labelInput
+      label: labelInput ? labelInput : "Unnamed"
     };
     onSubmit(entry);
     onClose();

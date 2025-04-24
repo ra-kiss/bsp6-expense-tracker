@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import SavingsTopBar from '../components/SavingsTopBar';
+import SavingsTopBar from '../components/savings/SavingsTopBar';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useGlobal } from '../components/GlobalContext';
@@ -19,7 +19,7 @@ export default function SavingsPage() {
   const addEntry = (value, currency, goal, label) => {
     let curValue = value ? value : 0;
     let curGoal = goal ? goal : 0;
-    let entryValues = { 'value': curValue, 'currency': currency, 'goal': goal, 'label': label };
+    let entryValues = { 'value': curValue, 'currency': currency, 'goal': curGoal, 'label': label };
     const newEntries = [entryValues, ...savingsProjects];
     setSavingsProjects(newEntries);
   };

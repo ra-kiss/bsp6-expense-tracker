@@ -30,7 +30,7 @@ export default function ProjectEntry({ index, entryValues }) {
                   <b>{value}</b>/{goal}{currency}
                 </Typography>
               </div>
-              <CircularProgressWithLabel variant="determinate" value={value/goal*100} />
+              <CircularProgressWithLabel variant="determinate" value={goal != 0 ? value/goal*100 : 0} />
             </div>
           </CardContent>
         </CardActionArea>
