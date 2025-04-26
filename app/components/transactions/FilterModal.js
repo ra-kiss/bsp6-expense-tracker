@@ -46,23 +46,23 @@ export default function FilterModal({ open, onClose, setFilter }) {
   const [markedCategories, setMarkedCategories] = useState([]);
 
   const handleCategoryChange = (event, categoryValue) => {
-    setMarkedCategories(categoryValue);
+    setMarkedCategories(categoryValue ? categoryValue : []);
   };
 
   const [markedCurrencies, setMarkedCurrencies] = useState([]);
 
   const handleCurrencyChange = (event, currencyValue) => {
-    setMarkedCurrencies(currencyValue);
+    setMarkedCurrencies(currencyValue ? currencyValue : []);
   };
 
   const [timeFilter, setTimeFilter] = useState('');
 
   const handleTimeFilterChange = (value) => {
-    setTimeFilter(value);
+    setTimeFilter(value ? value : '');
   };
 
   const clearFilters = () => {
-    setTimeFilter(null);
+    setTimeFilter('');
     setMarkedCategories([]);
     setMarkedCurrencies([]);
   }
@@ -159,8 +159,8 @@ export default function FilterModal({ open, onClose, setFilter }) {
             onChange={(event) => handleCategoryChange(event, event.target.value)}
           >
             {categories.map((category) => (
-              <MenuItem key={category.value} value={category.value}>
-                {category.label}
+              <MenuItem key={category} value={category}>
+                {category}
               </MenuItem>
             ))}
           </Select>

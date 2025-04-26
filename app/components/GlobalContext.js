@@ -30,23 +30,10 @@ export function GlobalProvider({ children }) {
     },
   ]);
 
+  const [mainCurrency, setMainCurrency] = useState('$ USD')
+
   const [categories, setCategories] = useState([
-    {
-      value: 'Groceries',
-      label: 'Groceries',
-    },
-    {
-      value: 'Housing',
-      label: 'Housing',
-    },
-    {
-      value: 'Gas',
-      label: 'Gas',
-    },
-    {
-      value: 'Other',
-      label: 'Other',
-    }
+    'Groceries', 'Housing', 'Gas', 'Other'
   ]);
 
   return (
@@ -55,6 +42,7 @@ export function GlobalProvider({ children }) {
       recurringEntries, setRecurringEntries, 
       savingsProjects, setSavingsProjects,
       currencies, setCurrencies, 
+      mainCurrency, setMainCurrency,
       categories, setCategories
        }}>
       {children}
