@@ -20,7 +20,7 @@
 - [x] Support editing and deleting transactions
 - [x] Set up recurring expenses
 	- [x] Allow users to define the frequency (daily, weekly, monthly, yearly)
-	- [ ] Notify user of upcoming recurring expenses in advance
+	- [x] Show users upcoming recurring expenses in advance
 	- [ ] Allow users to edit recurring expenses
 
 ### Savings
@@ -30,16 +30,18 @@
 - [ ] Display warnings when the savings goal is not on track (e.g. insufficient funds to meet the savings goal)
 - [ ] Warnings should be visible on all pages: it should be a persistent notification
 - [x] Allow users to see how much they have saved so far comparatively to the goal
-
+- [x] Allow users to sort projects by completion
+- [ ] (Optionally) Allow users to filter projects by currency
 
 ### Currencies
-- [ ] Display live comparison values w.r.t main currency for all currencies
+- [ ] Display comparison values w.r.t main currency for all currencies
 - [ ] Allow user to add custom currency with custom exchange rate w.r.t. their chosen main currency
-- [ ] (Optionally) Allow user to filter currencies
+- [ ] (Optionally) Allow user to filter currencies by custom/default
+- [ ] (Optionally) Allow users to sort currencies by value
 
 ### Options
 - [ ] Set or change main currency 
-- [ ] Add or remove categories 
+- [x] Add or remove categories 
 - [ ] Allow export and importing of transactions, savings goals, and custom currencies
 - [ ] (Optionally) Implement PIN for security 
 - [ ] (Optionally) Add language preference

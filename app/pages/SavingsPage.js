@@ -24,9 +24,22 @@ export default function SavingsPage() {
     setSavingsProjects(newEntries);
   };
 
+  const sortProjects = (projects, type, order) => {
+    // setSort({ type, order });
+    let sorted;
+    if (type === 'completion') {
+      sorted = [...projects].sort((a, b) => {
+        const progressA = a.goal != 0 ? a.value/a.goal*100 : 0;
+        const progressB = b.goal != 0 ? b.value/b.goal*100 : 0;
+        return order === 'asc' ? progressA - progressB : progressB - progressA;
+      });
+    }
+    setSavingsProjects(sorted);
+  };
+
   return (
     <>
-      <SavingsTopBar/>
+      <SavingsTopBar sortProjects={sortProjects}/>
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box>
         {savingsProjects
