@@ -22,6 +22,7 @@
 	- [x] Allow users to define the frequency (daily, weekly, monthly, yearly)
 	- [x] Show users upcoming recurring expenses in advance
 	- [ ] Allow users to edit recurring expenses
+- [ ] User-defined transaction templates
 
 ### Savings
 - [x] Allow user to create new savings project with a target amount
@@ -40,7 +41,9 @@
 - [ ] (Optionally) Allow users to sort currencies by value
 
 ### Options
-- [ ] Set or change main currency 
+- [x] Set or change main currency
+- [x] Set or change budget
+- [x] Set or change income frequency 
 - [x] Add or remove categories 
 - [ ] Allow export and importing of transactions, savings goals, and custom currencies
 - [ ] (Optionally) Implement PIN for security 

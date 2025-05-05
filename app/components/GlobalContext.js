@@ -13,24 +13,27 @@ export function GlobalProvider({ children }) {
 
   const [currencies, setCurrencies] = useState([
     {
-      value: '$ USD',
+      value: 'USD',
       label: '$ USD',
     },
     {
-      value: '€ EUR',
+      value: 'EUR',
       label: '€ EUR',
     },
     {
-      value: '฿ BTC',
+      value: 'BTC',
       label: '฿ BTC',
     },
     {
-      value: '¥ JPY',
+      value: 'JPY',
       label: '¥ JPY',
     },
   ]);
 
-  const [mainCurrency, setMainCurrency] = useState('$ USD')
+  const [mainCurrency, setMainCurrency] = useState('USD');
+
+  const [budget, setBudget] = useState('100');
+  const [budgetFrequency, setBudgetFrequency] = useState('monthly');
 
   const [categories, setCategories] = useState([
     'Groceries', 'Housing', 'Gas', 'Other'
@@ -43,6 +46,8 @@ export function GlobalProvider({ children }) {
       savingsProjects, setSavingsProjects,
       currencies, setCurrencies, 
       mainCurrency, setMainCurrency,
+      budget, setBudget,
+      budgetFrequency, setBudgetFrequency,
       categories, setCategories
        }}>
       {children}

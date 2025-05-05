@@ -34,14 +34,14 @@ export default function SavingsTopBar({ sortProjects }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Savings
           </Typography>
-        <IconButton
+        {/* <IconButton
           size="large"
           edge="end"
           color="inherit"
           aria-label="filter"
         >
           <FilterAltIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton
             size="large"
             edge="end"

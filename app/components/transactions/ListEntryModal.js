@@ -116,8 +116,8 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
             sx={{ width: '48%' }} // Nearly half width each
           >
             {categories.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
             ))}
           </TextField>

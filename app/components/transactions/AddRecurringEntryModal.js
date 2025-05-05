@@ -1,14 +1,16 @@
 import { useState } from 'react';
+import { useGlobal } from '../GlobalContext';
 import RecurringEntryModal from './RecurringEntryModal';
 import dayjs from 'dayjs';
 
 export default function AddRecurringEntryModal({ open, setOpen, addRecurringEntry }) {
+  const { mainCurrency, categories } = useGlobal();
   const handleClose = () => setOpen(false);
 
   const initialValues = {
     value: '',
-    currency: '$ USD',
-    category: 'Other',
+    currency: mainCurrency,
+    category: categories[0],
     date: dayjs(),
     notes: '',
     repeat: 'day'

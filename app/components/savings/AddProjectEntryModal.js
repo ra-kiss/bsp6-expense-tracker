@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import ProjectEntryModal from './ProjectEntryModal';
-import dayjs from 'dayjs';
+import { useGlobal } from "../GlobalContext";
 
 export default function AddProjectEntryModal({ open, setOpen, addEntry }) {
+  const { mainCurrency } = useGlobal();
   const handleClose = () => setOpen(false);
 
   const initialValues = {
     value: '',
-    currency: '$ USD',
+    currency: mainCurrency,
     goal: '',
     label: ''
   };
