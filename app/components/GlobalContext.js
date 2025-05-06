@@ -39,6 +39,15 @@ export function GlobalProvider({ children }) {
     'Groceries', 'Housing', 'Gas', 'Other'
   ]);
 
+  const [exchangeRates, setExchangeRates] = useState({
+      USD: 1,
+      EUR: 0.85,
+      BTC: 0.000017,
+      JPY: 110.0,
+  })
+
+  const [templates, setTemplates] = useState([]);
+
   return (
     <GlobalContext.Provider value={{ 
       entries, setEntries,
@@ -48,7 +57,9 @@ export function GlobalProvider({ children }) {
       mainCurrency, setMainCurrency,
       budget, setBudget,
       budgetFrequency, setBudgetFrequency,
-      categories, setCategories
+      categories, setCategories,
+      exchangeRates, setExchangeRates,
+      templates, setTemplates
        }}>
       {children}
     </GlobalContext.Provider>

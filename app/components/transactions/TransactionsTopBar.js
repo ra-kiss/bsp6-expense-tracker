@@ -12,7 +12,7 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 
 import { useGlobal } from '../GlobalContext';
 
-import FilterModal from "./FilterModal";
+import TransactionsFilterModal from "./TransactionsFilterModal";
 
 
 export default function TransactionsTopBar({sortEntries, setFilter}) {
@@ -36,7 +36,7 @@ export default function TransactionsTopBar({sortEntries, setFilter}) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <FilterModal open={filterModalOpen} setFilter={setFilter} onClose={handleClose}/>
+      <TransactionsFilterModal open={filterModalOpen} setFilter={setFilter} onClose={handleClose}/>
       <AppBar>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

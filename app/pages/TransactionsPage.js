@@ -14,15 +14,18 @@ import RecurringEntry from "../components/transactions/RecurringEntry";
 import AddListEntryModal from "../components/transactions/AddListEntryModal";
 import AddRecurringEntryModal from "../components/transactions/AddRecurringEntryModal";
 import TransactionsTopBar from '../components/transactions/TransactionsTopBar';
+import TemplateListModal from '../components/transactions/TemplateListModal';
 import { useGlobal } from '../components/GlobalContext';
 import dayjs from 'dayjs';
+import fx from 'money';
 
 export default function TransactionsPage() {
   const theme = useTheme();
-  const { entries, setEntries, recurringEntries, setRecurringEntries } = useGlobal();
+  const { entries, setEntries, recurringEntries, setRecurringEntries, exchangeRates, mainCurrency } = useGlobal();
   const [sort, setSort] = useState({ type: 'recency', order: 'asc' }); // Changed to 'asc' for earliest first
   const [addListEntryModalOpen, setAddListEntryModalOpen] = useState(false);
   const [addRecurringEntryModalOpen, setAddRecurringEntryModalOpen] = useState(false);
+  const [templateListModalOpen, setTemplateListModalOpen] = useState(false);
   const [filter, setFilter] = useState({
     category: '',
     currency: '',
@@ -30,6 +33,8 @@ export default function TransactionsPage() {
   });
   const [pageOffset, setPageOffset] = useState(0); // Track current page offset
   const transactionsPerPage = 10; // Display 10 transactions per page
+
+  fx.rates = exchangeRates;
 
   useEffect(() => {
     sortEntries(entries, sort.type, sort.order);
@@ -123,8 +128,8 @@ export default function TransactionsPage() {
       });
     } else if (type === 'value') {
       sorted = [...entries].sort((a, b) => {
-        const valueA = parseFloat(a.value);
-        const valueB = parseFloat(b.value);
+        const valueA = fx.convert(parseFloat(a.value) || 0, { from: a.currency, to: mainCurrency });
+        const valueB = fx.convert(parseFloat(b.value) || 0, { from: b.currency, to: mainCurrency });
         return order === 'asc' ? valueA - valueB : valueB - valueA;
       });
     }
@@ -200,11 +205,12 @@ export default function TransactionsPage() {
         ) : (<></>)}
         <AddListEntryModal open={addListEntryModalOpen} setOpen={setAddListEntryModalOpen} addEntry={addEntry} />
         <AddRecurringEntryModal open={addRecurringEntryModalOpen} setOpen={setAddRecurringEntryModalOpen} addRecurringEntry={addRecurringEntry} />
+        <TemplateListModal open={templateListModalOpen} onClose={() => setTemplateListModalOpen(false)} addEntry={addEntry} />
         <div className="fixed bottom-20 right-5 z-50">
-          {/* <Fab sx={{ mr: 2 }} color="secondary" aria-label="view-recurring" size="medium" onClick={() => console.log(recurringEntries)}>
-            <EventRepeatIcon />
-          </Fab> */}
           <Fab sx={{ mr: 2 }} color="primary" aria-label="add-recurring" size="medium" onClick={() => setAddRecurringEntryModalOpen(true)}>
+            <EventRepeatIcon />
+          </Fab>
+          <Fab sx={{ mr: 2 }} color="primary" aria-label="templates" size="medium" onClick={() => setTemplateListModalOpen(true)}>
             <EventRepeatIcon />
           </Fab>
           <Fab color="primary" aria-label="add" onClick={() => setAddListEntryModalOpen(true)}>

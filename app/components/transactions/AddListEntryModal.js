@@ -25,6 +25,7 @@ export default function AddListEntryModal({ open, setOpen, addEntry }) {
       onClose={handleClose}
       onSubmit={handleSubmit}
       initialValues={initialValues}
+      templateAvailable={true}
     />
   );
 }

@@ -22,7 +22,8 @@
 	- [x] Allow users to define the frequency (daily, weekly, monthly, yearly)
 	- [x] Show users upcoming recurring expenses in advance
 	- [ ] Allow users to edit recurring expenses
-- [ ] User-defined transaction templates
+- [x] Allow user-defined transaction templates
+- [ ] Allow users to modify transaction templates
 
 ### Savings
 - [x] Allow user to create new savings project with a target amount

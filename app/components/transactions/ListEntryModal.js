@@ -29,8 +29,8 @@ const boxStyle = {
   width: '100%'
 };
 
-export default function ListEntryModal({ open, onClose, onSubmit, initialValues, onDelete }) {
-  const { currencies, categories } = useGlobal();
+export default function ListEntryModal({ open, onClose, onSubmit, initialValues, onDelete, templateAvailable=false }) {
+  const { currencies, categories, setTemplates } = useGlobal();
 
   const [valueInput, setValueInput] = useState(initialValues.value);
   const [currencyInput, setCurrencyInput] = useState(initialValues.currency);
@@ -72,6 +72,21 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
     onSubmit(entry);
     onClose();
   };
+
+  const handleSaveAsTemplate = () => {
+    const formattedValue = new Decimal(valueInput || "0").toFixed(2);
+    const dateString = `${dateInput.$D}/${dateInput.$M + 1}/${dateInput.$y}`;
+    const template = {
+      value: formattedValue,
+      currency: currencyInput,
+      category: categoryInput,
+      date: dateString,
+      notes: notesInput,
+    };
+    setTemplates(prev => [...prev, template]);
+    onClose();
+  };
+  
 
   // Determine title and whether to show delete button based on onDelete prop
   const title = onDelete ? "Edit Transaction" : "Add Transaction";
@@ -141,13 +156,17 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
             sx={{ width: '100%' }} // Stretch to full width
           />
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row-reverse', gap: 1 }}>
           <Button variant="contained" onClick={handleSubmit}>
             Submit
           </Button>
+          {templateAvailable && (
+            <Button variant="outlined" color="primary" onClick={handleSaveAsTemplate}>
+              Save as Template
+            </Button>
+          )}
           {onDelete && (
             <Button
-              sx={{ mr: 1 }}
               variant="outlined"
               color="error"
               onClick={() => {
