@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useGlobal } from '../GlobalContext';
 import ListEntry from './ListEntry'; 
 import dayjs from 'dayjs';
@@ -22,7 +24,11 @@ const modalStyle = {
 };
 
 export default function TemplateListModal({ open, onClose, addEntry }) {
-  const { templates } = useGlobal();
+  const { templates, setTemplates } = useGlobal();
+
+  const handleDeleteTemplate = (index) => {
+    setTemplates(templates.filter((_, i) => i !== index));
+  };
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="template-list-title">
@@ -35,12 +41,24 @@ export default function TemplateListModal({ open, onClose, addEntry }) {
           <Typography>No templates saved yet.</Typography>
         ) : (
           templates.map((entry, index) => (
-            <Box key={index} onClick={() => {
-              const today = dayjs().format('D/M/YYYY');
-              addEntry(entry.value, entry.currency, entry.category, today, entry.notes);
-              onClose();
-            }}>
-              <ListEntry index={index} entryValues={entry} />
+            <Box key={index} sx={{ display: 'flex', alignItems: 'stretch', mb: 1 }}>
+              <Box
+                sx={{ flexGrow: 1, cursor: 'pointer' }}
+                onClick={() => {
+                  const today = dayjs().format('D/M/YYYY');
+                  addEntry(entry.value, entry.currency, entry.category, today, entry.notes);
+                  onClose();
+                }}
+              >
+                <ListEntry index={index} entryValues={entry} showDate={false} />
+              </Box>
+              <IconButton
+                onClick={() => handleDeleteTemplate(index)}
+                aria-label={`Delete template ${index + 1}`}
+                sx={{ alignSelf: 'stretch' }}
+              >
+                <DeleteIcon />
+              </IconButton>
             </Box>
           ))
         )}
