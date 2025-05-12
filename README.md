@@ -5,7 +5,6 @@
 	- [ ] How much is allocated to recurring expenses?
 - [ ] First Pie chart showing distribution of spending w.r.t. categories
 - [ ] Second Pie chart showing distribution of spending w.r.t. currencies
-- [ ] Line chart showing value fluctuation of the main currency against a selected reference currency
 - [ ] Display usage statistics: total spent, total saved, average expense by category, average expense by currency, most/least used category, most/least used currency
 
 ### Transactions
@@ -36,10 +35,9 @@
 - [ ] (Optionally) Allow users to filter projects by currency
 
 ### Currencies
-- [ ] Display comparison values w.r.t main currency for all currencies
-- [ ] Allow user to add custom currency with custom exchange rate w.r.t. their chosen main currency
-- [ ] (Optionally) Allow user to filter currencies by custom/default
-- [ ] (Optionally) Allow users to sort currencies by value
+- [x] Display comparison values w.r.t main currency for all currencies
+- [x] Allow user to add custom currency with custom exchange rate w.r.t. their chosen main currency
+- [x] (Optionally) Allow user to filter currencies by custom/default
 
 ### Options
 - [x] Set or change main currency

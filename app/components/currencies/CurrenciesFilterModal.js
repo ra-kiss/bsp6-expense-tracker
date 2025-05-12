@@ -3,26 +3,20 @@
 import FilterModal from '../FilterModal';
 import { useGlobal } from '../GlobalContext';
 
-export default function SavingsFilterModal({ open, onClose, setFilter }) {
+export default function CurrenciesFilterModal({ open, onClose, setFilter }) {
   const { currencies } = useGlobal();
 
   const filters = [
     {
-      key: 'currency',
-      label: 'By currencies',
-      options: currencies,
-      multiple: true,
-      initialValue: [],
-    },
-    {
-      key: 'completion',
-      label: 'By completion',
+      key: 'customStatus',
+      label: 'By Custom Status',
       options: [
-        { value: 'complete', label: 'Complete' },
-        { value: 'incomplete', label: 'Incomplete' },
+        { value: 'custom', label: 'Custom' },
+        { value: 'builtin', label: 'Built-in' },
         // { value: '', label: 'All' },
       ],
       initialValue: '',
+      multiple: false,
     },
   ];
 
@@ -31,7 +25,7 @@ export default function SavingsFilterModal({ open, onClose, setFilter }) {
       open={open}
       onClose={onClose}
       setFilter={setFilter}
-      title="Filter Settings"
+      title="Filter Currencies"
       filters={filters}
     />
   );

@@ -60,11 +60,13 @@ export default function SettingsPage() {
                   value={mainCurrency}
                   onChange={(event) => setMainCurrency(event.target.value)}
                 >
-                  {currencies.map((currency) => (
-                    <MenuItem key={currency.value} value={currency.value}>
-                      {currency.label}
-                    </MenuItem>
-                  ))}
+                  {currencies
+                    .filter((currency) => !('custom' in currency))
+                    .map((currency) => (
+                      <MenuItem key={currency.value} value={currency.value}>
+                        {currency.label}
+                      </MenuItem>
+                    ))}
                 </Select>
               </div>
             </CardContent>
