@@ -6,6 +6,7 @@ import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useTheme } from '@mui/material/styles';
@@ -112,7 +113,7 @@ export default function TransactionsPage() {
   // Add recurring entry
   const addRecurringEntry = (value, currency, category, date, notes, repeat) => {
     let curValue = value ? value : 0;
-    let entryValues = { value: curValue, currency, category, date, notes, repeat, isRecurring: true };
+    let entryValues = { value: curValue, currency, category, date, notes, repeat, isRecurring: true, templateIndex: recurringEntries.length };
     setRecurringEntries(prev => [entryValues, ...prev]);
   };
 
@@ -149,6 +150,8 @@ export default function TransactionsPage() {
 
   const handleNext = () => {
     setPageOffset(prev => prev + transactionsPerPage);
+    console.log(displayedTransactions);
+    console.log(recurringEntries)
   };
 
   // Get all transactions
@@ -185,7 +188,7 @@ export default function TransactionsPage() {
             No transactions found.
           </Box>
         )}
-        {displayedTransactions.length == 10 ? (
+        {displayedTransactions.length > 0 ? (
           <Box sx={{ display: 'flex', justifyContent: 'start', gap: 2, mb: 2, ml: 1 }}>
             <IconButton
               onClick={handlePrevious}
@@ -211,7 +214,7 @@ export default function TransactionsPage() {
             <EventRepeatIcon />
           </Fab>
           <Fab sx={{ mr: 2 }} color="primary" aria-label="templates" size="medium" onClick={() => setTemplateListModalOpen(true)}>
-            <EventRepeatIcon />
+            <AssignmentIcon />
           </Fab>
           <Fab color="primary" aria-label="add" onClick={() => setAddListEntryModalOpen(true)}>
             <AddIcon />

@@ -6,14 +6,22 @@ import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import EditRecurringEntryModal from './EditRecurringEntryModal';
 
 export default function RecurringEntry({ index, entryValues }) {
-  const { value, currency, date, category, repeat } = entryValues;
+  const { value, currency, date, category, templateIndex } = entryValues;
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   return (
     <div className="mx-2 my-2">
+      <EditRecurringEntryModal
+        open={editModalOpen}
+        setOpen={setEditModalOpen}
+        entryValues={entryValues}
+        templateIndex={templateIndex}
+      />
       <Card variant="outlined">
-        <CardActionArea>
+        <CardActionArea onClick={() => setEditModalOpen(true)}>
           <CardContent>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>

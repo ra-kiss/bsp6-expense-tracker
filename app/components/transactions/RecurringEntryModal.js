@@ -124,8 +124,8 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
             sx={{ width: '48%' }} // Nearly half width each
           >
             {categories.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
             ))}
           </TextField>

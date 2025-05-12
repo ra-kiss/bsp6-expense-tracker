@@ -20,7 +20,7 @@
 - [x] Set up recurring expenses
 	- [x] Allow users to define the frequency (daily, weekly, monthly, yearly)
 	- [x] Show users upcoming recurring expenses in advance
-	- [ ] Allow users to edit recurring expenses
+	- [x] Allow users to edit recurring expenses
 - [x] Allow user-defined transaction templates
 - [x] Allow users to delete transaction templates
 
