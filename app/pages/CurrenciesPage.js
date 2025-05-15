@@ -14,7 +14,7 @@ import CurrenciesFilterModal from '../components/currencies/CurrenciesFilterModa
 
 export default function CurrenciesPage() {
   const theme = useTheme();
-  const { currencies, setCurrencies, exchangeRates, setExchangeRates } = useGlobal();
+  const { currencies, setCurrencies, exchangeRates, setExchangeRates, saveDataToLocal } = useGlobal();
   const [addCurrencyModalOpen, setAddCurrencyModalOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [editCurrencyModalOpen, setEditCurrencyModalOpen] = useState(false);
@@ -89,6 +89,7 @@ export default function CurrenciesPage() {
           <Fab color="primary" aria-label="add" onClick={() => setAddCurrencyModalOpen(true)}>
             <AddIcon />
           </Fab>
+          {/* <Fab onClick={() => saveDataToLocal() }></Fab> */}
         </div>
       </Box>
     </>

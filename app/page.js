@@ -8,6 +8,7 @@ import SavingsPage from "./pages/SavingsPage";
 import SettingsPage from "./pages/SettingsPage";
 import CurrenciesPage from "./pages/CurrenciesPage";
 import Navbar from "./components/Navbar";
+import { GlobalProvider } from "./components/GlobalContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 export default function Home() {
@@ -22,11 +23,13 @@ export default function Home() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     <ThemeProvider theme={darkTheme}>
+      <GlobalProvider>
       {currentPage === 'transactions' && <TransactionsPage />}
       {currentPage === 'currencies' && <CurrenciesPage />}
       {currentPage === 'savings' && <SavingsPage />}
       {currentPage === 'settings' && <SettingsPage />}
       <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      </GlobalProvider>
     </ThemeProvider>
     </LocalizationProvider>
   );

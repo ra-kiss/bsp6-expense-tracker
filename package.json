@@ -14,6 +14,7 @@
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
     "@mui/x-date-pickers": "^7.28.0",
+    "@uidotdev/usehooks": "^2.4.1",
     "dayjs": "^1.11.13",
     "decimal.js": "^10.5.0",
     "exchange-rates": "^0.1.2",

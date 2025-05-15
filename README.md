@@ -32,7 +32,7 @@
 - [ ] Warnings should be visible on all pages: it should be a persistent notification
 - [x] Allow users to see how much they have saved so far comparatively to the goal
 - [x] Allow users to sort projects by completion
-- [ ] (Optionally) Allow users to filter projects by currency
+- [x] (Optionally) Allow users to filter projects by currency
 
 ### Currencies
 - [x] Display comparison values w.r.t main currency for all currencies
@@ -44,7 +44,8 @@
 - [x] Set or change budget
 - [x] Set or change income frequency 
 - [x] Add or remove categories 
-- [ ] Allow export and importing of transactions, savings goals, and custom currencies
+- [ ] Allow export and importing of transactions, savings goals, currencies and categories
+- [ ] Automatically save and load transactions, savings goals, currencies and categories
 - [ ] (Optionally) Implement PIN for security 
 - [ ] (Optionally) Add language preference
 - [ ] (Optionally) Dark/Light mode color scheme with customizable accent colors
