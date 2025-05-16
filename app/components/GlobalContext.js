@@ -77,6 +77,21 @@ export function GlobalProvider({ children }) {
     loadDataFromLocal();
   }, []);
 
+  useEffect(() => {
+    saveDataToLocal();
+  }, [
+    entries,
+    recurringEntries,
+    savingsProjects,
+    currencies,
+    mainCurrency,
+    budget,
+    budgetFrequency,
+    categories,
+    exchangeRates,
+    templates,
+  ]);  
+
   return (
     <GlobalContext.Provider value={{ 
       entries, setEntries,
