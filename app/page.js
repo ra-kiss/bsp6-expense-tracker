@@ -10,6 +10,7 @@ import CurrenciesPage from "./pages/CurrenciesPage";
 import Navbar from "./components/Navbar";
 import { GlobalProvider } from "./components/GlobalContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ClientOnly } from "./components/ClientOnly";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState('currencies');
@@ -23,6 +24,7 @@ export default function Home() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     <ThemeProvider theme={darkTheme}>
+    <ClientOnly>
       <GlobalProvider>
       {currentPage === 'transactions' && <TransactionsPage />}
       {currentPage === 'currencies' && <CurrenciesPage />}
@@ -30,6 +32,7 @@ export default function Home() {
       {currentPage === 'settings' && <SettingsPage />}
       <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       </GlobalProvider>
+    </ClientOnly>
     </ThemeProvider>
     </LocalizationProvider>
   );

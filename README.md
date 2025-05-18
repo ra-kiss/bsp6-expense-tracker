@@ -44,7 +44,7 @@
 - [x] Set or change budget
 - [x] Set or change income frequency 
 - [x] Add or remove categories 
-- [ ] Allow export and importing of transactions, savings goals, currencies and categories
+- [x] Allow export and importing of transactions, savings goals, currencies and categories
 - [x] Automatically save and load transactions, savings goals, currencies and categories
 - [ ] (Optionally) Implement PIN for security 
 - [ ] (Optionally) Add language preference
