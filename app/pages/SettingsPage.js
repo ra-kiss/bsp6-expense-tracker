@@ -11,6 +11,8 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import TextField from '@mui/material/TextField';
 import { useGlobal } from '../components/GlobalContext';
 import CategoriesModal from '../components/settings/CategoriesModal';
@@ -21,7 +23,7 @@ export default function SettingsPage() {
   const descriptionStyle = { color: 'text.secondary', fontSize: 13, maxWidth: 300 };
   
   const [categoriesModalOpen, setCategoriesModalOpen] = useState(false);
-  const { currencies, mainCurrency, setMainCurrency, budget, setBudget, budgetFrequency, setBudgetFrequency } = useGlobal();
+  const { currencies, mainCurrency, setMainCurrency, budget, setBudget, budgetFrequency, setBudgetFrequency, exportDataToJson, importDataFromJson } = useGlobal();
 
   const handleChange = (e) => {
     let value = e.target.value.replace(/[^0-9.]/g, ""); // Numbers and decimal only
@@ -143,6 +145,42 @@ export default function SettingsPage() {
                   </Typography>
                 </div>
                 <MenuIcon/>
+              </div>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+
+        <Card>
+          <CardActionArea onClick={() => exportDataToJson()}>
+            <CardContent>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <Typography sx={{ fontSize: 16 }} className="font-bold" component="div">
+                    Export Data
+                  </Typography>
+                  <Typography sx={descriptionStyle}>
+                  Export user data as JSON
+                  </Typography>
+                </div>
+                <FileDownloadIcon/>
+              </div>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      
+        <Card>
+          <CardActionArea onClick={() => importDataFromJson()}>
+            <CardContent>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <Typography sx={{ fontSize: 16 }} className="font-bold" component="div">
+                    Import Data
+                  </Typography>
+                  <Typography sx={descriptionStyle}>
+                  Import user data from JSON
+                  </Typography>
+                </div>
+                <FileUploadIcon/>
               </div>
             </CardContent>
           </CardActionArea>

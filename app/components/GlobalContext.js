@@ -58,7 +58,6 @@ export function GlobalProvider({ children }) {
       { value: 'EUR', label: '€ EUR' },
       { value: 'BTC', label: '฿ BTC' },
       { value: 'JPY', label: '¥ JPY' },
-      { value: 'AAA', label: 'a AAA'},
     ]);
     setMainCurrency(localData.mainCurrency || 'USD');
     setBudget(localData.budget || '100');
@@ -71,6 +70,83 @@ export function GlobalProvider({ children }) {
       JPY: 110.0,
     });
     setTemplates(localData.templates || []);
+  };
+
+  const exportDataToJson = () => {
+    const dataToExport = {
+      entries,
+      recurringEntries,
+      savingsProjects,
+      currencies,
+      mainCurrency,
+      budget,
+      budgetFrequency,
+      categories,
+      exchangeRates,
+      templates,
+    };
+    
+    const jsonString = JSON.stringify(dataToExport, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'budget-settings.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const importDataFromJson = () => {
+    if (typeof window === 'undefined') return; // Prevent server-side execution
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+
+    input.onchange = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          
+          setEntries(importedData.entries || []);
+          setRecurringEntries(importedData.recurringEntries || []);
+          setSavingsProjects(importedData.savingsProjects || []);
+          setCurrencies(importedData.currencies || [
+            { value: 'USD', label: '$ USD' },
+            { value: 'EUR', label: '€ EUR' },
+            { value: 'BTC', label: '฿ BTC' },
+            { value: 'JPY', label: '¥ JPY' },
+          ]);
+          setMainCurrency(importedData.mainCurrency || 'USD');
+          setBudget(importedData.budget || '100');
+          setBudgetFrequency(importedData.budgetFrequency || 'monthly');
+          setCategories(importedData.categories || ['Groceries', 'Housing', 'Gas', 'Other']);
+          setExchangeRates(importedData.exchangeRates || {
+            USD: 1,
+            EUR: 0.85,
+            BTC: 0.000017,
+            JPY: 110.0,
+          });
+          setTemplates(importedData.templates || []);
+
+          // Save imported data to local storage
+          saveLocalData(importedData);
+        } catch (error) {
+          console.error('Error parsing JSON file:', error);
+          alert('Failed to import settings. Please ensure the file is a valid JSON.');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    input.click(); // Open file select dialog
   };
 
   useEffect(() => {
@@ -90,7 +166,7 @@ export function GlobalProvider({ children }) {
     categories,
     exchangeRates,
     templates,
-  ]);  
+  ]);
 
   return (
     <GlobalContext.Provider value={{ 
@@ -106,6 +182,8 @@ export function GlobalProvider({ children }) {
       templates, setTemplates,
       saveDataToLocal,
       loadDataFromLocal,
+      exportDataToJson,
+      importDataFromJson,
     }}>
       {children}
     </GlobalContext.Provider>
