@@ -1,5 +1,5 @@
 ### Home/Dashboard
-- [ ] Display available balance (money left to spend)
+- [x] Display available balance (money left to spend)
 - [ ] Progress bar showing budget allocation
 	- [ ] How much is left in the budget?
 	- [ ] How much is allocated to recurring expenses?
@@ -37,6 +37,7 @@
 ### Currencies
 - [x] Display comparison values w.r.t main currency for all currencies
 - [x] Allow user to add custom currency with custom exchange rate w.r.t. their chosen main currency
+- [ ] Use real exchange rates, support more currencies
 - [x] (Optionally) Allow user to filter currencies by custom/default
 
 ### Options

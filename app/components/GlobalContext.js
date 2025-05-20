@@ -30,6 +30,7 @@ export function GlobalProvider({ children }) {
     JPY: 110.0,
   });
   const [templates, setTemplates] = useState([]);
+  const [remainingBudget, setRemainingBudget] = useState('100');
 
   const saveDataToLocal = () => {
     const dataToSave = {
@@ -43,6 +44,7 @@ export function GlobalProvider({ children }) {
       categories,
       exchangeRates,
       templates,
+      remainingBudget,
     };
     saveLocalData(dataToSave);
   };
@@ -70,6 +72,7 @@ export function GlobalProvider({ children }) {
       JPY: 110.0,
     });
     setTemplates(localData.templates || []);
+    setRemainingBudget(localData.remainingBudget || localData.budget || '100');
   };
 
   const exportDataToJson = () => {
@@ -84,6 +87,7 @@ export function GlobalProvider({ children }) {
       categories,
       exchangeRates,
       templates,
+      remainingBudget,
     };
     
     const jsonString = JSON.stringify(dataToExport, null, 2);
@@ -135,6 +139,7 @@ export function GlobalProvider({ children }) {
             JPY: 110.0,
           });
           setTemplates(importedData.templates || []);
+          setRemainingBudget(importedData.remainingBudget || importedData.budget || '100');
 
           // Save imported data to local storage
           saveLocalData(importedData);
@@ -153,6 +158,7 @@ export function GlobalProvider({ children }) {
     loadDataFromLocal();
   }, []);
 
+  // Save to local anytime anything changes
   useEffect(() => {
     saveDataToLocal();
   }, [
@@ -166,6 +172,7 @@ export function GlobalProvider({ children }) {
     categories,
     exchangeRates,
     templates,
+    remainingBudget,
   ]);
 
   return (
@@ -180,6 +187,7 @@ export function GlobalProvider({ children }) {
       categories, setCategories,
       exchangeRates, setExchangeRates,
       templates, setTemplates,
+      remainingBudget, setRemainingBudget,
       saveDataToLocal,
       loadDataFromLocal,
       exportDataToJson,

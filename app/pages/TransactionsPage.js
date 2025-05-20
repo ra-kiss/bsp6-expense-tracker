@@ -23,7 +23,7 @@ import fx from 'money';
 export default function TransactionsPage() {
   const theme = useTheme();
   const { entries, setEntries, recurringEntries, setRecurringEntries, exchangeRates, mainCurrency } = useGlobal();
-  const [sort, setSort] = useState({ type: 'recency', order: 'asc' }); // Changed to 'asc' for earliest first
+  const [sort, setSort] = useState({ type: 'recency', order: 'asc' }); // Earliest first
   const [addListEntryModalOpen, setAddListEntryModalOpen] = useState(false);
   const [addRecurringEntryModalOpen, setAddRecurringEntryModalOpen] = useState(false);
   const [templateListModalOpen, setTemplateListModalOpen] = useState(false);
@@ -55,7 +55,7 @@ export default function TransactionsPage() {
     switch (repeat) {
       case 'day': nextDate = dayjsDate.add(1, 'day'); break;
       case 'week': nextDate = dayjsDate.add(7, 'day'); break;
-      case 'month': nextDate = dayjsDate.add(1, 'month'); break; // Improved for accurate month handling
+      case 'month': nextDate = dayjsDate.add(1, 'month'); break;
       case 'year': nextDate = dayjsDate.add(1, 'year'); break;
       default: nextDate = dayjsDate;
     }
@@ -92,9 +92,9 @@ export default function TransactionsPage() {
       generateRecurringInstances(entry, today, endDate)
     );
 
-    // Combine one-time entries and recurring instances
+    // Combine all one-time entries and recurring instances
     const allTransactions = [
-      ...entries.filter(entry => parseDate(entry.date) >= parseDate(today)),
+      ...entries, // Include all one-time entries, past and future
       ...recurringInstances
     ];
 
@@ -150,8 +150,6 @@ export default function TransactionsPage() {
 
   const handleNext = () => {
     setPageOffset(prev => prev + transactionsPerPage);
-    console.log(displayedTransactions);
-    console.log(recurringEntries)
   };
 
   // Get all transactions
@@ -164,7 +162,7 @@ export default function TransactionsPage() {
     )
   );
 
-  // Get current page of transactions
+  // Get current pageParser
   const displayedTransactions = filteredTransactions.slice(
     pageOffset,
     pageOffset + transactionsPerPage

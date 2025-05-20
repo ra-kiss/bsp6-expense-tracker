@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import HomePage from "./pages/HomePage";
 import TransactionsPage from "./pages/TransactionsPage";
 import SavingsPage from "./pages/SavingsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -26,6 +27,7 @@ export default function Home() {
     <ThemeProvider theme={darkTheme}>
     <ClientOnly>
       <GlobalProvider>
+      {currentPage === 'home' && <HomePage />}
       {currentPage === 'transactions' && <TransactionsPage />}
       {currentPage === 'currencies' && <CurrenciesPage />}
       {currentPage === 'savings' && <SavingsPage />}

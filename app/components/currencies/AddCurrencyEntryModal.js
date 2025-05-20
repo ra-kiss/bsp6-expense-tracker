@@ -3,7 +3,7 @@ import CurrencyEntryModal from './CurrencyEntryModal';
 import { useGlobal } from "../GlobalContext";
 
 export default function AddCurrencyEntryModal({ open, setOpen, addEntry }) {
-  const { mainCurrency } = useGlobal();
+  const { } = useGlobal();
   const handleClose = () => setOpen(false);
 
   const initialValues = {
