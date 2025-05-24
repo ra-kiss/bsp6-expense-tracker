@@ -19,7 +19,7 @@ const parseDate = (dateString) => {
 
 export default function HomePage() {
   const theme = useTheme();
-  const { budget, remainingBudget, currencies, mainCurrency, entries } = useGlobal();
+  const { budget, remainingBudget, allocatedBudget, currencies, mainCurrency, entries } = useGlobal();
 
   const mainCurrencyLabel = currencies.find(currency => currency.value === mainCurrency)?.label || 'Unknown';
 
@@ -58,7 +58,7 @@ export default function HomePage() {
                 </Typography>
               </Box>
               <Box sx={{ mt: 1 }}>
-                <LinearProgress variant="buffer" value={(remainingBudget / budget) * 100} valueBuffer={3} />
+                <LinearProgress variant="buffer" value={(remainingBudget / budget) * 100} valueBuffer={(allocatedBudget / budget ) * 100} />
               </Box>
             </CardContent>
           </CardActionArea>

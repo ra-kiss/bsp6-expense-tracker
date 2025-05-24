@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useLocalStorage } from "@uidotdev/usehooks";
+import dayjs from 'dayjs';
+import fx from 'money';
 
 const GlobalContext = createContext();
 
@@ -31,6 +33,7 @@ export function GlobalProvider({ children }) {
   });
   const [templates, setTemplates] = useState([]);
   const [remainingBudget, setRemainingBudget] = useState('100');
+  const [allocatedBudget, setAllocatedBudget] = useState('0');
 
   const saveDataToLocal = () => {
     const dataToSave = {
@@ -45,6 +48,7 @@ export function GlobalProvider({ children }) {
       exchangeRates,
       templates,
       remainingBudget,
+      // allocatedBudget is derived each render, no need to persist
     };
     saveLocalData(dataToSave);
   };
@@ -73,6 +77,7 @@ export function GlobalProvider({ children }) {
     });
     setTemplates(localData.templates || []);
     setRemainingBudget(localData.remainingBudget || localData.budget || '100');
+    // allocatedBudget is derived; no need to load
   };
 
   const exportDataToJson = () => {
@@ -88,6 +93,7 @@ export function GlobalProvider({ children }) {
       exchangeRates,
       templates,
       remainingBudget,
+      // allocatedBudget is derived each render, not included
     };
     
     const jsonString = JSON.stringify(dataToExport, null, 2);
@@ -140,6 +146,7 @@ export function GlobalProvider({ children }) {
           });
           setTemplates(importedData.templates || []);
           setRemainingBudget(importedData.remainingBudget || importedData.budget || '100');
+          // allocatedBudget will be recalculated in the effect
 
           // Save imported data to local storage
           saveLocalData(importedData);
@@ -154,11 +161,12 @@ export function GlobalProvider({ children }) {
     input.click(); // Open file select dialog
   };
 
+  // Load from local storage on mount
   useEffect(() => {
     loadDataFromLocal();
   }, []);
 
-  // Save to local anytime anything changes
+  // Save to local storage anytime these values change
   useEffect(() => {
     saveDataToLocal();
   }, [
@@ -175,6 +183,97 @@ export function GlobalProvider({ children }) {
     remainingBudget,
   ]);
 
+  // Recalculate remainingBudget (past transactions) and allocatedBudget (upcoming recurring) whenever relevant data changes
+  useEffect(() => {
+    // Helper: parse date string "D/M/YYYY" into a Date object
+    const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/').map(Number);
+      return new Date(year, month - 1, day);
+    };
+
+    // Helper: get next recurring date string in "D/M/YYYY" format
+    const getNextDate = (dateString, repeat) => {
+      const date = parseDate(dateString);
+      const dayjsDate = dayjs(date);
+      let next;
+      switch (repeat) {
+        case 'day':
+          next = dayjsDate.add(1, 'day');
+          break;
+        case 'week':
+          next = dayjsDate.add(7, 'day');
+          break;
+        case 'month':
+          next = dayjsDate.add(1, 'month');
+          break;
+        case 'year':
+          next = dayjsDate.add(1, 'year');
+          break;
+        default:
+          next = dayjsDate;
+      }
+      // Format as D/M/YYYY
+      return `${next.date()}/${next.month() + 1}/${next.year()}`;
+    };
+
+    // Configure fx.rates so we can convert any currency to mainCurrency
+    fx.rates = exchangeRates;
+
+    // Determine today, start and end of current month
+    const today = dayjs().toDate();
+    const startOfMonth = dayjs().startOf('month').toDate();
+    const endOfMonth = dayjs().endOf('month').toDate();
+
+    // Sum one-time entries that occurred earlier this month (<= today)
+    let pastSingular = entries.reduce((sum, entry) => {
+      const entryDate = parseDate(entry.date);
+      if (entryDate >= startOfMonth && entryDate <= today) {
+        const rawValue = parseFloat(entry.value) || 0;
+        const convertedValue = fx.convert(rawValue, {
+          from: entry.currency,
+          to: mainCurrency
+        });
+        return sum + convertedValue;
+      }
+      return sum;
+    }, 0);
+
+    let pastRecurring = 0;
+    let upcomingRecurring = 0;
+
+    // Iterate recurring entries to split past vs upcoming within this month
+    recurringEntries.forEach((recEntry) => {
+      let currentDateStr = recEntry.date;
+      let current = parseDate(currentDateStr);
+
+      // Iterate through each occurrence until we pass endOfMonth
+      while (current <= endOfMonth) {
+        if (current >= startOfMonth) {
+          const rawValue = parseFloat(recEntry.value) || 0;
+          const convertedValue = fx.convert(rawValue, {
+            from: recEntry.currency,
+            to: mainCurrency
+          });
+          if (current <= today) {
+            pastRecurring += convertedValue;
+          } else {
+            upcomingRecurring += convertedValue;
+          }
+        }
+        currentDateStr = getNextDate(currentDateStr, recEntry.repeat);
+        current = parseDate(currentDateStr);
+      }
+    });
+
+    // Compute remainingBudget = budget - (pastSingular + pastRecurring)
+    const budgetValue = parseFloat(budget) || 0;
+    const remaining = budgetValue - (pastSingular + pastRecurring + upcomingRecurring);
+    setRemainingBudget(remaining.toString());
+
+    // Compute allocatedBudget = sum of upcomingRecurring
+    setAllocatedBudget(upcomingRecurring.toString());
+  }, [entries, recurringEntries, exchangeRates, mainCurrency, budget]);
+
   return (
     <GlobalContext.Provider value={{ 
       entries, setEntries,
@@ -188,6 +287,7 @@ export function GlobalProvider({ children }) {
       exchangeRates, setExchangeRates,
       templates, setTemplates,
       remainingBudget, setRemainingBudget,
+      allocatedBudget, setAllocatedBudget,
       saveDataToLocal,
       loadDataFromLocal,
       exportDataToJson,
