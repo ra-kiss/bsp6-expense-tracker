@@ -95,9 +95,9 @@ export default function SettingsPage() {
                   <MenuItem value={"monthly"}>
                     Monthly
                   </MenuItem>
-                  <MenuItem value={"biweekly"}>
+                  {/* <MenuItem value={"biweekly"}>
                     Every 2 Weeks
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem value={"weekly"}>
                     Weekly
                   </MenuItem>

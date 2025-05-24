@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
@@ -95,11 +96,11 @@ export function GlobalProvider({ children }) {
       remainingBudget,
       // allocatedBudget is derived each render, not included
     };
-    
+
     const jsonString = JSON.stringify(dataToExport, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const link = document.createElement('a');
     link.href = url;
     link.download = 'budget-settings.json';
@@ -124,7 +125,7 @@ export function GlobalProvider({ children }) {
       reader.onload = (e) => {
         try {
           const importedData = JSON.parse(e.target.result);
-          
+
           setEntries(importedData.entries || []);
           setRecurringEntries(importedData.recurringEntries || []);
           setSavingsProjects(importedData.savingsProjects || []);
@@ -149,7 +150,7 @@ export function GlobalProvider({ children }) {
           // allocatedBudget will be recalculated in the effect
 
           // Save imported data to local storage
-          saveLocalData(importedData);
+          saveDataToLocal(importedData);
         } catch (error) {
           console.error('Error parsing JSON file:', error);
           alert('Failed to import settings. Please ensure the file is a valid JSON.');
@@ -183,7 +184,7 @@ export function GlobalProvider({ children }) {
     remainingBudget,
   ]);
 
-  // Recalculate remainingBudget (past transactions) and allocatedBudget (upcoming recurring) whenever relevant data changes
+  // Recalculate remainingBudget (past + upcoming) and allocatedBudget (upcoming recurring) whenever relevant data changes
   useEffect(() => {
     // Helper: parse date string "D/M/YYYY" into a Date object
     const parseDate = (dateString) => {
@@ -212,22 +213,31 @@ export function GlobalProvider({ children }) {
         default:
           next = dayjsDate;
       }
-      // Format as D/M/YYYY
       return `${next.date()}/${next.month() + 1}/${next.year()}`;
     };
 
     // Configure fx.rates so we can convert any currency to mainCurrency
     fx.rates = exchangeRates;
 
-    // Determine today, start and end of current month
+    // Determine period start/end based on budgetFrequency
     const today = dayjs().toDate();
-    const startOfMonth = dayjs().startOf('month').toDate();
-    const endOfMonth = dayjs().endOf('month').toDate();
+    let periodStart, periodEnd;
+    if (budgetFrequency === 'weekly') {
+      const now = dayjs();
+      const dayOfWeek = now.day(); // Sunday=0, Monday=1, ...
+      const monday = now.subtract((dayOfWeek + 6) % 7, 'day');
+      periodStart = monday.startOf('day').toDate();
+      periodEnd = monday.add(6, 'day').endOf('day').toDate();
+    } else {
+      // monthly by default
+      periodStart = dayjs().startOf('month').toDate();
+      periodEnd = dayjs().endOf('month').toDate();
+    }
 
-    // Sum one-time entries that occurred earlier this month (<= today)
+    // Sum one-time entries that occurred in period up to today
     let pastSingular = entries.reduce((sum, entry) => {
       const entryDate = parseDate(entry.date);
-      if (entryDate >= startOfMonth && entryDate <= today) {
+      if (entryDate >= periodStart && entryDate <= today) {
         const rawValue = parseFloat(entry.value) || 0;
         const convertedValue = fx.convert(rawValue, {
           from: entry.currency,
@@ -241,14 +251,13 @@ export function GlobalProvider({ children }) {
     let pastRecurring = 0;
     let upcomingRecurring = 0;
 
-    // Iterate recurring entries to split past vs upcoming within this month
+    // Iterate recurring entries to split past vs upcoming within period
     recurringEntries.forEach((recEntry) => {
       let currentDateStr = recEntry.date;
       let current = parseDate(currentDateStr);
 
-      // Iterate through each occurrence until we pass endOfMonth
-      while (current <= endOfMonth) {
-        if (current >= startOfMonth) {
+      while (current <= periodEnd) {
+        if (current >= periodStart) {
           const rawValue = parseFloat(recEntry.value) || 0;
           const convertedValue = fx.convert(rawValue, {
             from: recEntry.currency,
@@ -265,21 +274,21 @@ export function GlobalProvider({ children }) {
       }
     });
 
-    // Compute remainingBudget = budget - (pastSingular + pastRecurring)
+    // Compute allocatedBudget = sum of upcomingRecurring
+    setAllocatedBudget(upcomingRecurring.toString());
+
+    // Compute remainingBudget = budget - (pastSingular + pastRecurring + upcomingRecurring)
     const budgetValue = parseFloat(budget) || 0;
     const remaining = budgetValue - (pastSingular + pastRecurring + upcomingRecurring);
     setRemainingBudget(remaining.toString());
-
-    // Compute allocatedBudget = sum of upcomingRecurring
-    setAllocatedBudget(upcomingRecurring.toString());
-  }, [entries, recurringEntries, exchangeRates, mainCurrency, budget]);
+  }, [entries, recurringEntries, exchangeRates, mainCurrency, budget, budgetFrequency]);
 
   return (
-    <GlobalContext.Provider value={{ 
+    <GlobalContext.Provider value={{
       entries, setEntries,
-      recurringEntries, setRecurringEntries, 
+      recurringEntries, setRecurringEntries,
       savingsProjects, setSavingsProjects,
-      currencies, setCurrencies, 
+      currencies, setCurrencies,
       mainCurrency, setMainCurrency,
       budget, setBudget,
       budgetFrequency, setBudgetFrequency,
