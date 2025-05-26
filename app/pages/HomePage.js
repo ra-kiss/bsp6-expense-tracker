@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box';
 import HomeTopBar from '../components/home/HomeTopBar';
+import StatsModal from '../components/home/StatsModal';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
@@ -12,6 +13,8 @@ import { useGlobal } from '../components/GlobalContext';
 import dayjs from 'dayjs';
 import { PieChart } from '@mui/x-charts/PieChart';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import { useState } from 'react';
+import fx from 'money';
 
 // Helper function to parse D/M/YYYY date strings
 const parseDate = (dateString) => {
@@ -40,10 +43,20 @@ export default function HomePage() {
     budgetFrequency,
     currencies,
     mainCurrency,
-    entries
+    entries,
+    savingsProjects,
+    exchangeRates,
   } = useGlobal();
-  
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
+
   const mainCurrencyLabel = currencies.find(currency => currency.value === mainCurrency)?.label || 'Unknown';
+
+  // Configure fx.rates for currency conversion
+  fx.rates = exchangeRates;
 
   // Filter entries for current month and week
   const thisMonthEntries = entries.filter((e) =>
@@ -53,11 +66,55 @@ export default function HomePage() {
     dayjs(parseDate(e.date)).isSame(dayjs(), 'week')
   );
 
-  // Determine entries based on budget frequency
   const entriesForFrequency = budgetFrequency === "weekly" ? thisWeekEntries : thisMonthEntries;
-
-  // Label for the period
   const periodLabel = budgetFrequency === "weekly" ? "week" : "month";
+
+  // Calculate total spent
+  const totalSpentThisWeek = thisWeekEntries.reduce((sum, entry) => {
+    const rawValue = parseFloat(entry.value) || 0;
+    return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+  }, 0).toFixed(2);
+
+  const totalSpentThisMonth = thisMonthEntries.reduce((sum, entry) => {
+    const rawValue = parseFloat(entry.value) || 0;
+    return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+  }, 0).toFixed(2);
+
+  const totalSpentAllTime = entries.reduce((sum, entry) => {
+    const rawValue = parseFloat(entry.value) || 0;
+    return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+  }, 0).toFixed(2);
+
+  // Calculate total saved from savingsProjects
+  const totalSavedAllTime = savingsProjects.reduce((sum, project) => {
+    const rawValue = parseFloat(project.value) || 0;
+    return sum + fx.convert(rawValue, { from: project.currency, to: mainCurrency });
+  }, 0).toFixed(2);
+
+  // Calculate most used categories
+  const mostUsedCategoryThisWeek = getMostUsedItem(thisWeekEntries, 'category');
+  const mostUsedCategoryThisMonth = getMostUsedItem(thisMonthEntries, 'category');
+  const mostUsedCategoryAllTime = getMostUsedItem(entries, 'category');
+
+  // Calculate most used currencies
+  const currencyLabelMap = Object.fromEntries(currencies.map(c => [c.value, c.label]));
+  const mostUsedCurrencyThisWeek = getMostUsedItem(thisWeekEntries, 'currency', currencyLabelMap);
+  const mostUsedCurrencyThisMonth = getMostUsedItem(thisMonthEntries, 'currency', currencyLabelMap);
+  const mostUsedCurrencyAllTime = getMostUsedItem(entries, 'currency', currencyLabelMap);
+
+  // Create stats dictionary
+  const stats = {
+    totalSpentThisWeek,
+    totalSpentThisMonth,
+    totalSpentAllTime,
+    totalSavedAllTime,
+    mostUsedCategoryThisWeek,
+    mostUsedCategoryThisMonth,
+    mostUsedCategoryAllTime,
+    mostUsedCurrencyThisWeek,
+    mostUsedCurrencyThisMonth,
+    mostUsedCurrencyAllTime,
+  };
 
   // Pie Chart Data: Distribution by Category (counts)
   const categoryCounts = entriesForFrequency.reduce((acc, entry) => {
@@ -86,7 +143,7 @@ export default function HomePage() {
 
   // Most Used Category & Currency for the current period
   const mostUsedCategory = getMostUsedItem(entriesForFrequency, 'category');
-  const mostUsedCurrency = getMostUsedItem(entriesForFrequency, 'currency', Object.fromEntries(currencies.map(c => [c.value, c.label])));
+  const mostUsedCurrency = getMostUsedItem(entriesForFrequency, 'currency', currencyLabelMap);
 
   return (
     <>
@@ -177,7 +234,7 @@ export default function HomePage() {
           </Card>
 
           <Card>
-            <CardActionArea>
+            <CardActionArea onClick={handleOpenModal}>
               <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <BarChartIcon sx={{ fontSize: 28, mr: 1, color: 'primary' }} />
@@ -187,6 +244,7 @@ export default function HomePage() {
             </CardActionArea>
           </Card>
         </Box>
+        <StatsModal open={modalOpen} onClose={handleCloseModal} stats={stats}/>
       </Box>
     </>
   );

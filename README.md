@@ -1,11 +1,11 @@
 ### Home/Dashboard
 - [x] Display available balance (money left to spend)
-- [ ] Progress bar showing budget allocation
-	- [ ] How much is left in the budget?
-	- [ ] How much is allocated to recurring expenses?
-- [ ] First Pie chart showing distribution of spending w.r.t. categories
-- [ ] Second Pie chart showing distribution of spending w.r.t. currencies
-- [ ] Display usage statistics: total spent, total saved, average expense by category, average expense by currency, most/least used category, most/least used currency
+- [x] Progress bar showing budget allocation
+	- [x] How much is left in the budget?
+	- [x] How much is allocated to recurring expenses?
+- [x] First Pie chart showing distribution of spending w.r.t. categories
+- [x] Second Pie chart showing distribution of spending w.r.t. currencies
+- [x] Display usage statistics: total spent, total saved, most/least used category, most/least used currency
 
 ### Transactions
 - [x] Show list of transactions with relevant details
