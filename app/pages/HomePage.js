@@ -150,7 +150,7 @@ export default function HomePage() {
       <HomeTopBar />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box sx={{ p: 1 }}>
-        <Card>
+        <Card variant="outlined">
           <CardActionArea>
             <CardContent sx={{ p: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -171,7 +171,7 @@ export default function HomePage() {
 
         <Box sx={{ mt: 1 }} />
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <Card sx={{ flex: 1 }}>
+          <Card sx={{ flex: 1 }} variant="outlined">
             <CardActionArea>
               <CardContent sx={{ p: 2 }}>
                 <Typography sx={{ fontSize: 12 }} className="font-bold" component="div">
@@ -188,7 +188,7 @@ export default function HomePage() {
               </CardContent>
             </CardActionArea>
           </Card>
-          <Card sx={{ flex: 1 }}>
+          <Card sx={{ flex: 1 }} variant="outlined">
             <CardActionArea>
               <CardContent sx={{ p: 2 }}>
                 <Typography sx={{ fontSize: 12 }} className="font-bold" component="div">
@@ -210,7 +210,7 @@ export default function HomePage() {
         {/* Pie Charts */}
         <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
           {/* Distribution by Category */}
-          <Card>
+          <Card variant="outlined">
             <CardContent>
               <Typography sx={{ fontSize: 16, mb: 1 }} className="font-bold">
                 <b>Category Distribution</b> this {periodLabel}
@@ -222,7 +222,7 @@ export default function HomePage() {
           </Card>
 
           {/* Distribution by Currency */}
-          <Card>
+          <Card variant="outlined">
             <CardContent>
               <Typography sx={{ fontSize: 16, mb: 1 }} className="font-bold">
                 <b>Currency Distribution</b> this {periodLabel}
@@ -233,16 +233,18 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card variant="outlined">
             <CardActionArea onClick={handleOpenModal}>
               <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <BarChartIcon sx={{ fontSize: 28, mr: 1, color: 'primary' }} />
+                  <BarChartIcon sx={{ fontSize: 24, mr: 1, color: 'primary' }} />
                   <Typography sx={{ fontSize: 18 }}>More</Typography>
                 </Box>
               </CardContent>
             </CardActionArea>
           </Card>
+
+          <Box sx={{mt: 6}}/>
         </Box>
         <StatsModal open={modalOpen} onClose={handleCloseModal} stats={stats}/>
       </Box>

@@ -42,7 +42,7 @@ export default function StatsModal({ open, onClose, stats }) {
         <Typography sx={{fontWeight: 'bold'}} variant="h5" component="h2">
           More Statistics
         </Typography>
-        <Card sx={{mt: 2}}>
+        <Card sx={{mt: 2}} variant="outlined">
         <CardContent>
         <Typography sx={{ fontSize: 20}}>
           Total Spent
@@ -58,7 +58,7 @@ export default function StatsModal({ open, onClose, stats }) {
         </Typography>
         </CardContent>
         </Card>
-        <Card sx={{mt: 2}}>
+        <Card sx={{mt: 2}} variant="outlined">
         <CardContent>
         <Typography sx={{ fontSize: 20 }}>
           Total Saved
@@ -68,7 +68,7 @@ export default function StatsModal({ open, onClose, stats }) {
         </Typography>
         </CardContent>
         </Card>
-        <Card sx={{mt: 2}}>
+        <Card sx={{mt: 2}} variant="outlined">
         <CardContent>
         <Typography sx={{ fontSize: 20 }}>
           Your most used category was...
@@ -84,7 +84,7 @@ export default function StatsModal({ open, onClose, stats }) {
         </Typography>
         </CardContent>
         </Card>
-        <Card sx={{mt: 2}}>
+        <Card sx={{mt: 2}} variant="outlined">
         <CardContent>
         <Typography sx={{ fontSize: 20 }}>
           Your most used currency was...
