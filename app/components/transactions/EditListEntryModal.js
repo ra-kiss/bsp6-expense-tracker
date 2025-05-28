@@ -17,7 +17,8 @@ export default function EditListEntryModal({ open, setOpen, entryValues, index }
     currency: entryValues.currency,
     category: entryValues.category,
     date: dayjs(parseDate(entryValues.date)),
-    notes: entryValues.notes
+    notes: entryValues.notes,
+    isIncome: entryValues.isIncome
   };
 
   const handleSubmit = (entry) => {

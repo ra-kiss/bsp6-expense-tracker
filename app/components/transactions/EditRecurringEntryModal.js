@@ -12,7 +12,8 @@ export default function EditRecurringEntryModal({ open, setOpen, entryValues, te
     category: entryValues.category || '',
     date: dayjs(entryValues.date, 'D/M/YYYY'),
     notes: entryValues.notes || '',
-    repeat: entryValues.repeat || 'day'
+    repeat: entryValues.repeat || 'day',
+    isIncome: entryValues.isIncome || false
   };
 
   const handleSubmit = (entry) => {

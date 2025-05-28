@@ -9,11 +9,7 @@ import { DateField } from '@mui/x-date-pickers/DateField';
 import { useGlobal } from '../GlobalContext';
 import Decimal from 'decimal.js';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import RadioGroup from '@mui/material/RadioGroup';
-import Radio from '@mui/material/Radio';
-import FormLabel from '@mui/material/FormLabel';
-import dayjs from 'dayjs';
+import Switch from '@mui/material/Switch';
 
 const style = {
   position: 'absolute',
@@ -43,6 +39,7 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
   const [dateInput, setDateInput] = useState(initialValues.date);
   const [notesInput, setNotesInput] = useState(initialValues.notes);
   const [repeatInput, setRepeatInput] = useState(initialValues.repeat);
+  const [isIncome, setIsIncome] = useState(initialValues.isIncome ?? false);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -75,7 +72,8 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
       category: categoryInput,
       date: dateString,
       notes: notesInput,
-      repeat: repeatInput
+      repeat: repeatInput,
+      isIncome: isIncome
     };
     onSubmit(entry);
     onClose();
@@ -130,13 +128,25 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
             ))}
           </TextField>
         </Box>
-        <Box sx={boxStyle}>
+        <Box sx={{ ...boxStyle, justifyContent: 'space-between' }}>
           <DateField
             label="Date"
             value={dateInput}
             onChange={(value) => setDateInput(value)}
             sx={{ width: '100%' }} // Stretch to full width
           />
+          <Box sx={{m: 1, ml: 3, minWidth: 110}}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isIncome}
+                onChange={(e) => setIsIncome(e.target.checked)}
+                color="primary"
+              />
+            }
+            label={isIncome ? 'Income' : 'Expense'}
+          />
+          </Box>
         </Box>
         <Box sx={boxStyle}>
           <TextField

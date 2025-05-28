@@ -13,11 +13,12 @@ export default function AddRecurringEntryModal({ open, setOpen, addRecurringEntr
     category: categories[0],
     date: dayjs(),
     notes: '',
-    repeat: 'day'
+    repeat: 'day',
+    isIncome: false
   };
 
   const handleSubmit = (entry) => {
-    addRecurringEntry(entry.value, entry.currency, entry.category, entry.date, entry.notes, entry.repeat);
+    addRecurringEntry(entry.value, entry.currency, entry.category, entry.date, entry.notes, entry.repeat, entry.isIncome);
   };
 
   return (

@@ -103,17 +103,18 @@ export default function TransactionsPage() {
   };
 
   // Add one-time entry
-  const addEntry = (value, currency, category, date, notes) => {
+  const addEntry = (value, currency, category, date, notes, isIncome) => {
     let curValue = value ? value : 0;
-    let entryValues = { value: curValue, currency, category, date, notes };
+    console.log(isIncome);
+    let entryValues = { value: curValue, currency, category, date, notes, isIncome };
     const newEntries = [entryValues, ...entries];
     sortEntries(newEntries, sort.type, sort.order);
   };
 
   // Add recurring entry
-  const addRecurringEntry = (value, currency, category, date, notes, repeat) => {
+  const addRecurringEntry = (value, currency, category, date, notes, repeat, isIncome) => {
     let curValue = value ? value : 0;
-    let entryValues = { value: curValue, currency, category, date, notes, repeat, isRecurring: true, templateIndex: recurringEntries.length };
+    let entryValues = { value: curValue, currency, category, date, notes, repeat, isIncome, isRecurring: true, templateIndex: recurringEntries.length };
     setRecurringEntries(prev => [entryValues, ...prev]);
   };
 

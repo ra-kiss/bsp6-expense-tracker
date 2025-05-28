@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import MenuItem from '@mui/material/MenuItem';
@@ -37,6 +39,7 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
   const [categoryInput, setCategoryInput] = useState(initialValues.category);
   const [dateInput, setDateInput] = useState(initialValues.date);
   const [notesInput, setNotesInput] = useState(initialValues.notes);
+  const [isIncome, setIsIncome] = useState(initialValues.isIncome ?? false);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -46,6 +49,7 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
       setCategoryInput(initialValues.category);
       setDateInput(initialValues.date);
       setNotesInput(initialValues.notes);
+      setIsIncome(initialValues.isIncome)
     }
   }, [open, initialValues]);
 
@@ -68,6 +72,7 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
       category: categoryInput,
       date: dateString,
       notes: notesInput,
+      isIncome: isIncome
     };
     onSubmit(entry);
     onClose();
@@ -82,6 +87,7 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
       category: categoryInput,
       date: dateString,
       notes: notesInput,
+      isIncome: isIncome
     };
     setTemplates(prev => [...prev, template]);
     onClose();
@@ -137,13 +143,25 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
             ))}
           </TextField>
         </Box>
-        <Box sx={boxStyle}>
+        <Box sx={{...boxStyle, justifyContent: 'space-between'}}>
           <DateField
             label="Date"
             value={dateInput}
             onChange={(value) => setDateInput(value)}
             sx={{ width: '100%' }} // Stretch to full width
           />
+          <Box sx={{m: 1, ml: 3, minWidth: 110}}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isIncome}
+                onChange={(e) => setIsIncome(e.target.checked)}
+                color="primary"
+              />
+            }
+            label={isIncome ? 'Income' : 'Expense'}
+          />
+          </Box>
         </Box>
         <Box sx={boxStyle}>
           <TextField

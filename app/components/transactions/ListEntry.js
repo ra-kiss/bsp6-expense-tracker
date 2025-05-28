@@ -14,7 +14,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import EditListEntryModal from "./EditListEntryModal";
 
 export default function ListEntry({ index, entryValues, showDate = true }) {
-  const { value, currency, date, category, notes } = entryValues;
+  const { value, currency, date, category, notes, isIncome } = entryValues;
 
   const [editListEntryModalOpen, setEditListEntryModalOpen] = useState(false);
 
@@ -37,11 +37,14 @@ export default function ListEntry({ index, entryValues, showDate = true }) {
         >
           <CardContent>
             <Typography
-              sx={{ fontWeight: "bold", fontSize: 20 }}
+              sx={{ 
+                fontWeight: "bold",
+                fontSize: 20,
+                color: isIncome ? 'success.main' : 'error.main' }}
               className="font-bold"
               component="div"
             >
-              {value}
+              {isIncome ? "+" : "-"}{value}
               {currencyLabel}
             </Typography>
             <div>

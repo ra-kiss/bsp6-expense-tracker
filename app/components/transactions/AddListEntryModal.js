@@ -12,11 +12,12 @@ export default function AddListEntryModal({ open, setOpen, addEntry }) {
     currency: mainCurrency,
     category: categories[0],
     date: dayjs(),
-    notes: ''
+    notes: '',
+    isIncome: false
   };
 
   const handleSubmit = (entry) => {
-    addEntry(entry.value, entry.currency, entry.category, entry.date, entry.notes, entry.date);
+    addEntry(entry.value, entry.currency, entry.category, entry.date, entry.notes, entry.isIncome);
   };
 
   return (
