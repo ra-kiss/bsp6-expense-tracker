@@ -91,6 +91,7 @@ export default function CurrenciesPage() {
           </Fab>
           {/* <Fab onClick={() => saveDataToLocal() }></Fab> */}
         </div>
+        <Box sx={{mt: 8}}/>
       </Box>
     </>
   );

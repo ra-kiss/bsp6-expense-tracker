@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import MenuItem from '@mui/material/MenuItem';
@@ -92,7 +90,6 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
     setTemplates(prev => [...prev, template]);
     onClose();
   };
-  
 
   // Determine title and whether to show delete button based on onDelete prop
   const title = onDelete ? "Edit Transaction" : "Add Transaction";
@@ -143,25 +140,24 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
             ))}
           </TextField>
         </Box>
-        <Box sx={{...boxStyle, justifyContent: 'space-between'}}>
+        <Box sx={{...boxStyle, justifyContent: 'space-between', alignItems: 'center'}}>
           <DateField
             label="Date"
             value={dateInput}
             onChange={(value) => setDateInput(value)}
-            sx={{ width: '100%' }} // Stretch to full width
+            sx={{ width: '48%' }} // Adjust width to match other fields
           />
-          <Box sx={{m: 1, ml: 3, minWidth: 110}}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isIncome}
-                onChange={(e) => setIsIncome(e.target.checked)}
-                color="primary"
-              />
-            }
-            label={isIncome ? 'Income' : 'Expense'}
-          />
-          </Box>
+          <Button
+            variant="outlined"
+            color={isIncome ? 'success' : 'error'}
+            onClick={() => setIsIncome(!isIncome)}
+            sx={{
+              width: '48%',
+              height: '4em'
+            }}
+          >
+            {isIncome ? 'Income' : 'Expense'}
+          </Button>
         </Box>
         <Box sx={boxStyle}>
           <TextField
