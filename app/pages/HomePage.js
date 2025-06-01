@@ -58,6 +58,10 @@ export default function HomePage() {
   // Configure fx.rates for currency conversion
   fx.rates = exchangeRates;
 
+  // Normalize remainingBudget and budget to two decimal places
+  const normalizedRemainingBudget = parseFloat(remainingBudget || 0).toFixed(2);
+  const normalizedBudget = parseFloat(budget || 0).toFixed(2);
+
   // Filter entries for current month and week
   const thisMonthEntries = entries.filter((e) =>
     dayjs(parseDate(e.date)).isSame(dayjs(), 'month')
@@ -155,14 +159,14 @@ export default function HomePage() {
             <CardContent sx={{ p: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography sx={{ fontSize: 20 }} className="font-bold" component="div">
-                  <b>{remainingBudget}/{budget} {mainCurrencyLabel}</b> left this {periodLabel}
+                  <b>{normalizedRemainingBudget}/{normalizedBudget} {mainCurrencyLabel}</b> left this {periodLabel}
                 </Typography>
               </Box>
               <Box sx={{ mt: 1 }}>
                 <LinearProgress
                   variant="buffer"
-                  value={(remainingBudget / budget) * 100}
-                  valueBuffer={(allocatedBudget / budget) * 100}
+                  value={(parseFloat(normalizedRemainingBudget) / parseFloat(normalizedBudget)) * 100}
+                  valueBuffer={(parseFloat(allocatedBudget || 0) / parseFloat(normalizedBudget)) * 100}
                 />
               </Box>
             </CardContent>

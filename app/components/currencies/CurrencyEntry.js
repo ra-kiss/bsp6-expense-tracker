@@ -24,7 +24,7 @@ export default function CurrencyEntry({ index, entryValues, onClick }) {
                   <b>{label}</b>
                 </Typography>
                 <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
-                  1{label} = <b>{valueInMain}{mainCurrencyLabel}</b>
+                  1{mainCurrencyLabel} = <b>{valueInMain}{label}</b>
                 </Typography>
               </div>
               {custom && <AutoAwesomeIcon />}

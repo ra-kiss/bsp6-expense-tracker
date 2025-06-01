@@ -128,25 +128,24 @@ export default function RecurringEntryModal({ open, onClose, onSubmit, initialVa
             ))}
           </TextField>
         </Box>
-        <Box sx={{ ...boxStyle, justifyContent: 'space-between' }}>
+        <Box sx={{ ...boxStyle, justifyContent: 'space-between', alignItems: 'center' }}>
           <DateField
             label="Date"
             value={dateInput}
             onChange={(value) => setDateInput(value)}
-            sx={{ width: '100%' }} // Stretch to full width
+            sx={{ width: '48%' }} 
           />
-          <Box sx={{m: 1, ml: 3, minWidth: 110}}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isIncome}
-                onChange={(e) => setIsIncome(e.target.checked)}
-                color="primary"
-              />
-            }
-            label={isIncome ? 'Income' : 'Expense'}
-          />
-          </Box>
+          <Button
+            variant="outlined"
+            color={isIncome ? 'success' : 'error'}
+            onClick={() => setIsIncome(!isIncome)}
+            sx={{
+              width: '48%',
+              height: '4em'
+            }}
+          >
+            {isIncome ? 'Income' : 'Expense'}
+          </Button>
         </Box>
         <Box sx={boxStyle}>
           <TextField

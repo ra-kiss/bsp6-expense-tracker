@@ -313,7 +313,8 @@ export function GlobalProvider({ children }) {
           from: entry.currency,
           to: mainCurrency
         });
-        return sum + convertedValue;
+        // Add income, subtract expenses
+        return sum + (entry.isIncome ? convertedValue : -convertedValue);
       }
       return sum;
     }, 0);
@@ -333,8 +334,10 @@ export function GlobalProvider({ children }) {
             to: mainCurrency
           });
           if (current <= today) {
-            pastRecurring += convertedValue;
-          } else {
+            // Add income, subtract expenses for past recurring
+            pastRecurring += recEntry.isIncome ? convertedValue : -convertedValue;
+          } else if (!recEntry.isIncome) {
+            // Only include expenses in upcoming recurring
             upcomingRecurring += convertedValue;
           }
         }
@@ -343,10 +346,10 @@ export function GlobalProvider({ children }) {
       }
     });
 
-    setAllocatedBudget(upcomingRecurring.toString());
+    setAllocatedBudget(upcomingRecurring.toFixed(2).toString());
     const budgetValue = parseFloat(budget) || 0;
-    const remaining = budgetValue - (pastSingular + pastRecurring + upcomingRecurring);
-    setRemainingBudget(remaining.toString());
+    const remaining = budgetValue + pastSingular + pastRecurring;
+    setRemainingBudget(remaining.toFixed(2).toString());
   }, [entries, recurringEntries, exchangeRates, mainCurrency, budget, budgetFrequency]);
 
   return (

@@ -46,7 +46,7 @@ export default function TemplateListModal({ open, onClose, addEntry }) {
                 sx={{ flexGrow: 1, cursor: 'pointer' }}
                 onClick={() => {
                   const today = dayjs().format('D/M/YYYY');
-                  addEntry(entry.value, entry.currency, entry.category, today, entry.notes);
+                  addEntry(entry.value, entry.currency, entry.category, today, entry.notes, entry.isIncome);
                   onClose();
                 }}
               >

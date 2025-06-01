@@ -145,7 +145,7 @@ export default function ListEntryModal({ open, onClose, onSubmit, initialValues,
             label="Date"
             value={dateInput}
             onChange={(value) => setDateInput(value)}
-            sx={{ width: '48%' }} // Adjust width to match other fields
+            sx={{ width: '48%' }} 
           />
           <Button
             variant="outlined"
