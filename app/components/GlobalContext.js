@@ -83,7 +83,7 @@ export function GlobalProvider({ children }) {
       recurringEntries,
       savingsProjects,
       currencies,
-      mainCurrency,
+      mainCurrency創新者,
       budget,
       budgetFrequency,
       categories,
@@ -147,11 +147,11 @@ export function GlobalProvider({ children }) {
   };
 
   // Fetch exchange rates and currencies from ExchangeRate-API
-  const fetchExchangeRates = async (baseCurrency) => {
+  const fetchExchangeRates = async (baseCurrency, forceFetch = false) => {
     if (typeof window === 'undefined') return;
 
     // Check if rates were updated recently (within 24 hours for free tier)
-    if (lastRatesUpdate) {
+    if (!forceFetch && lastRatesUpdate) {
       const lastUpdate = dayjs(lastRatesUpdate);
       const now = dayjs();
       if (now.diff(lastUpdate, 'hour') < 24) {
@@ -175,6 +175,10 @@ export function GlobalProvider({ children }) {
         });
         setExchangeRates(newRates);
         setLastRatesUpdate(dayjs().toISOString());
+
+        // Update fx library with new rates
+        fx.base = baseCurrency;
+        fx.rates = newRates;
 
         // Populate currencies with only supported codes from symbol mapping
         const newCurrencies = Object.keys(currencySymbols).map((code) => ({
@@ -203,6 +207,18 @@ export function GlobalProvider({ children }) {
             CHF: 0.91,
             CNY: 6.47,
           });
+          fx.base = baseCurrency;
+          fx.rates = {
+            USD: 1,
+            EUR: 0.85,
+            BTC: 0.000017,
+            JPY: 110.0,
+            GBP: 0.79,
+            AUD: 1.35,
+            CAD: 1.27,
+            CHF: 0.91,
+            CNY: 6.47,
+          };
         }
       }
     } catch (error) {
@@ -226,6 +242,18 @@ export function GlobalProvider({ children }) {
           CHF: 0.91,
           CNY: 6.47,
         });
+        fx.base = baseCurrency;
+        fx.rates = {
+          USD: 1,
+          EUR: 0.85,
+          BTC: 0.000017,
+          JPY: 110.0,
+          GBP: 0.79,
+          AUD: 1.35,
+          CAD: 1.27,
+          CHF: 0.91,
+          CNY: 6.47,
+        };
       }
     }
   };
@@ -254,10 +282,93 @@ export function GlobalProvider({ children }) {
     lastRatesUpdate,
   ]);
 
+  // Update fx configuration whenever exchangeRates or mainCurrency changes
+  useEffect(() => {
+    fx.base = mainCurrency;
+    fx.rates = exchangeRates;
+  }, [exchangeRates, mainCurrency]);
+
   // Fetch new rates when mainCurrency changes
   useEffect(() => {
-    fetchExchangeRates(mainCurrency);
+    setLastRatesUpdate(null); // Reset to force fetch
+    fetchExchangeRates(mainCurrency, true); // Force fetch new rates
   }, [mainCurrency]);
+
+  // Allocate remaining budget to savings goals at the end of the budget period
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const checkAndAllocateBudget = () => {
+      const now = dayjs();
+      let isEndOfPeriod = false;
+      let periodEnd;
+
+      // Determine if it's the end of the budget period
+      if (budgetFrequency === 'weekly') {
+        periodEnd = now.endOf('week');
+        isEndOfPeriod = now.isSame(periodEnd, 'day');
+      } else {
+        periodEnd = now.endOf('month');
+        isEndOfPeriod = now.isSame(periodEnd, 'day');
+      }
+
+      if (!isEndOfPeriod) return;
+
+      // Get incomplete savings projects (value < goal)
+      const incompleteProjects = savingsProjects.filter(
+        (project) => parseFloat(project.value) < parseFloat(project.goal)
+      );
+
+      if (incompleteProjects.length === 0 || parseFloat(remainingBudget) <= 0) return;
+
+      let remainingFunds = parseFloat(remainingBudget);
+      const updatedProjects = [...savingsProjects];
+
+      // Allocate funds sequentially to incomplete projects
+      for (let i = 0; i < updatedProjects.length && remainingFunds > 0; i++) {
+        const project = updatedProjects[i];
+        const currentValue = parseFloat(project.value) || 0;
+        const goal = parseFloat(project.goal) || 0;
+
+        if (currentValue >= goal) continue; // Skip completed projects
+
+        // Calculate remaining amount needed in project's currency
+        const remainingNeeded = goal - currentValue;
+        // Convert to mainCurrency for allocation
+        const remainingNeededInMainCurrency = fx.convert(remainingNeeded, {
+          from: project.currency,
+          to: mainCurrency,
+        });
+
+        // Determine how much to allocate
+        const amountToAllocateInMainCurrency = Math.min(remainingFunds, remainingNeededInMainCurrency);
+        const amountToAllocateInProjectCurrency = fx.convert(amountToAllocateInMainCurrency, {
+          from: mainCurrency,
+          to: project.currency,
+        });
+
+        // Update project value
+        updatedProjects[i] = {
+          ...project,
+          value: (currentValue + amountToAllocateInProjectCurrency).toFixed(2).toString(),
+        };
+
+        // Update remaining funds
+        remainingFunds -= amountToAllocateInMainCurrency;
+      }
+
+      // Update state
+      setSavingsProjects(updatedProjects);
+      setRemainingBudget(remainingFunds.toFixed(2).toString());
+      setBudget(budget); // Reset budget for the new period
+    };
+
+    // Check daily at midnight
+    const interval = setInterval(checkAndAllocateBudget, 24 * 60 * 60 * 1000); // 24 hours
+    checkAndAllocateBudget(); // Run immediately in case we're already at the end
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [savingsProjects, remainingBudget, budgetFrequency, exchangeRates, mainCurrency, budget]);
 
   // Recalculate remainingBudget and allocatedBudget
   useEffect(() => {
@@ -288,9 +399,6 @@ export function GlobalProvider({ children }) {
       }
       return `${next.date()}/${next.month() + 1}/${next.year()}`;
     };
-
-    fx.base = mainCurrency;
-    fx.rates = exchangeRates;
 
     const today = dayjs().toDate();
     let periodStart, periodEnd;
