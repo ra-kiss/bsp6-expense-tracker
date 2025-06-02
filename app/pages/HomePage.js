@@ -8,6 +8,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
+import Alert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
 import { useGlobal } from '../components/GlobalContext';
 import dayjs from 'dayjs';
@@ -89,10 +90,15 @@ export default function HomePage() {
     return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
   }, 0).toFixed(2);
 
-  // Calculate total saved from savingsProjects
+  // Calculate total saved and total savings goals
   const totalSavedAllTime = savingsProjects.reduce((sum, project) => {
     const rawValue = parseFloat(project.value) || 0;
     return sum + fx.convert(rawValue, { from: project.currency, to: mainCurrency });
+  }, 0).toFixed(2);
+
+  const totalSavingsGoals = savingsProjects.reduce((sum, project) => {
+    const rawGoal = parseFloat(project.goal) || 0;
+    return sum + fx.convert(rawGoal, { from: project.currency, to: mainCurrency });
   }, 0).toFixed(2);
 
   // Calculate most used categories
@@ -149,11 +155,51 @@ export default function HomePage() {
   const mostUsedCategory = getMostUsedItem(entriesForFrequency, 'category');
   const mostUsedCurrency = getMostUsedItem(entriesForFrequency, 'currency', currencyLabelMap);
 
+  // Calculate daily average spending from last 30 days
+  const thirtyDaysAgo = dayjs().subtract(30, 'day').startOf('day');
+  const last30DaysEntries = entries.filter((e) => {
+    const entryDate = dayjs(parseDate(e.date));
+    return entryDate.isAfter(thirtyDaysAgo) && !e.isIncome; // Exclude income entries
+  });
+
+  const totalSpentLast30Days = last30DaysEntries.reduce((sum, entry) => {
+    const rawValue = parseFloat(entry.value) || 0;
+    return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+  }, 0);
+
+  const dailyAverage = last30DaysEntries.length > 0 ? totalSpentLast30Days / 30 : 0;
+
+  // Calculate remaining days in budget period
+  let remainingDays;
+  if (budgetFrequency === 'weekly') {
+    const now = dayjs();
+    const dayOfWeek = now.day();
+    const endOfWeek = now.endOf('week');
+    remainingDays = endOfWeek.diff(now, 'day') + 1; // Include today
+  } else {
+    const endOfMonth = dayjs().endOf('month');
+    remainingDays = endOfMonth.diff(dayjs(), 'day') + 1; // Include today
+  }
+
+  // Extrapolate spending
+  const extrapolatedSpending = dailyAverage * remainingDays;
+
+  // Calculate remaining savings needed
+  const remainingSavingsNeeded = parseFloat(totalSavingsGoals) - parseFloat(totalSavedAllTime);
+
+  // Check if remaining budget is sufficient
+  const showWarning = parseFloat(normalizedRemainingBudget) < (extrapolatedSpending + remainingSavingsNeeded);
+
   return (
     <>
       <HomeTopBar />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box sx={{ p: 1 }}>
+        {showWarning && (
+          <Alert severity="warning" sx={{ mb: 2, position: 'sticky', top: 0, zIndex: 10 }}>
+            Warning: Based on your current spending rate, you may not have enough budget to meet your savings goals this {periodLabel}.
+          </Alert>
+        )}
         <Card variant="outlined">
           <CardActionArea>
             <CardContent sx={{ p: 2 }}>
@@ -185,7 +231,7 @@ export default function HomePage() {
                   <b>Most Used Currency</b> <Typography component="span" sx={{fontSize: 12}}>is</Typography>
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 1 }}>
-                  <Typography sx={{ fontSize: 20, fontWeight: 'bold' }} className="font-bold" component="div">
+                  <Typography sx={{ fontSize: 20, fontWeight: 'bold' }} component="div">
                     {mostUsedCurrency}
                   </Typography>
                 </Box>
