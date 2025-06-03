@@ -29,7 +29,7 @@
 - [x] Allow user to edit savings projects
 - [x] Automatically transfer leftover budget to savings goals at some interval (weekly, monthly) 
 - [x] Display warnings when the savings goal is not on track (e.g. insufficient funds to meet the savings goal)
-- [ ] Warnings should be visible on all pages: it should be a persistent notification
+- [x] Warnings should be visible on all pages: it should be a persistent notification
 - [x] Allow users to see how much they have saved so far comparatively to the goal
 - [x] Allow users to sort projects by completion
 - [x] (Optionally) Allow users to filter projects by currency

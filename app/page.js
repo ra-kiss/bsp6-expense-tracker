@@ -14,7 +14,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ClientOnly } from "./components/ClientOnly";
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState('currencies');
+  const [currentPage, setCurrentPage] = useState('home');
 
   const darkTheme = createTheme({
     palette: {

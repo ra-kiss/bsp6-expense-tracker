@@ -11,10 +11,12 @@ import CurrencyEntry from "../components/currencies/CurrencyEntry";
 import AddCurrencyEntryModal from '../components/currencies/AddCurrencyEntryModal';
 import EditCurrencyEntryModal from '../components/currencies/EditCurrencyEntryModal';
 import CurrenciesFilterModal from '../components/currencies/CurrenciesFilterModal';
+import Alert from '@mui/material/Alert';
+
 
 export default function CurrenciesPage() {
   const theme = useTheme();
-  const { currencies, setCurrencies, exchangeRates, setExchangeRates, saveDataToLocal } = useGlobal();
+  const { currencies, setCurrencies, exchangeRates, setExchangeRates, saveDataToLocal, showWarning } = useGlobal();
   const [addCurrencyModalOpen, setAddCurrencyModalOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [editCurrencyModalOpen, setEditCurrencyModalOpen] = useState(false);
@@ -51,6 +53,13 @@ export default function CurrenciesPage() {
     <>
       <GenericTopBar title="Currencies" showFilter onFilterClick={() => setFilterModalOpen(true)} />
       <Box sx={{ ...theme.mixins.toolbar }} />
+          {showWarning && (
+          <Box sx={{p:1}}>
+            <Alert severity="warning" sx={{ mb: 2, position: 'sticky', top: 0, zIndex: 10 }}>
+              Warning: Based on your current spending rate, you may not have enough budget to meet your savings goals.
+            </Alert>
+          </Box>
+          )}
       <Box>
         {currencyEntries.length > 0 ? (
           currencyEntries.map((entry, index) => (

@@ -25,6 +25,7 @@ export function GlobalProvider({ children }) {
   const [remainingBudget, setRemainingBudget] = useState('100');
   const [allocatedBudget, setAllocatedBudget] = useState('0');
   const [lastRatesUpdate, setLastRatesUpdate] = useState(null); // Track last update time
+  const [showWarning, setShowWarning] = useState(false);
 
   // Replace with your ExchangeRate-API key
   const API_KEY = '5e353c9666b3c058c7ceeab6';
@@ -146,6 +147,91 @@ export function GlobalProvider({ children }) {
     input.click();
   };
 
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const checkForWarning = () => {
+    // Normalize remainingBudget and budget to two decimal places
+    const normalizedRemainingBudget = parseFloat(remainingBudget || 0).toFixed(2);
+    const normalizedBudget = parseFloat(budget || 0).toFixed(2);
+  
+    // Filter entries for current month and week
+    const thisMonthEntries = entries.filter((e) =>
+      dayjs(parseDate(e.date)).isSame(dayjs(), 'month')
+    );
+    const thisWeekEntries = entries.filter((e) =>
+      dayjs(parseDate(e.date)).isSame(dayjs(), 'week')
+    );
+  
+    const entriesForFrequency = budgetFrequency === "weekly" ? thisWeekEntries : thisMonthEntries;
+    const periodLabel = budgetFrequency === "weekly" ? "week" : "month";
+  
+    // Calculate total spent
+    const totalSpentThisWeek = thisWeekEntries.reduce((sum, entry) => {
+      const rawValue = parseFloat(entry.value) || 0;
+      return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+    }, 0).toFixed(2);
+  
+    const totalSpentThisMonth = thisMonthEntries.reduce((sum, entry) => {
+      const rawValue = parseFloat(entry.value) || 0;
+      return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+    }, 0).toFixed(2);
+  
+    const totalSpentAllTime = entries.reduce((sum, entry) => {
+      const rawValue = parseFloat(entry.value) || 0;
+      return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+    }, 0).toFixed(2);
+  
+    // Calculate total saved and total savings goals
+    const totalSavedAllTime = savingsProjects.reduce((sum, project) => {
+      const rawValue = parseFloat(project.value) || 0;
+      return sum + fx.convert(rawValue, { from: project.currency, to: mainCurrency });
+    }, 0).toFixed(2);
+  
+    const totalSavingsGoals = savingsProjects.reduce((sum, project) => {
+      const rawGoal = parseFloat(project.goal) || 0;
+      return sum + fx.convert(rawGoal, { from: project.currency, to: mainCurrency });
+    }, 0).toFixed(2);
+    
+    // Calculate daily average spending from last 30 days
+    const thirtyDaysAgo = dayjs().subtract(30, 'day').startOf('day');
+    const last30DaysEntries = entries.filter((e) => {
+      const entryDate = dayjs(parseDate(e.date));
+      return entryDate.isAfter(thirtyDaysAgo) && !e.isIncome; // Exclude income entries
+    });
+  
+    const totalSpentLast30Days = last30DaysEntries.reduce((sum, entry) => {
+      const rawValue = parseFloat(entry.value) || 0;
+      return sum + fx.convert(rawValue, { from: entry.currency, to: mainCurrency });
+    }, 0);
+  
+    const dailyAverage = last30DaysEntries.length > 0 ? totalSpentLast30Days / 30 : 0;
+  
+    // Calculate remaining days in budget period
+    let remainingDays;
+    if (budgetFrequency === 'weekly') {
+      const now = dayjs();
+      const dayOfWeek = now.day();
+      const endOfWeek = now.endOf('week');
+      remainingDays = endOfWeek.diff(now, 'day') + 1; // Include today
+    } else {
+      const endOfMonth = dayjs().endOf('month');
+      remainingDays = endOfMonth.diff(dayjs(), 'day') + 1; // Include today
+    }
+  
+    // Extrapolate spending
+    const extrapolatedSpending = dailyAverage * remainingDays;
+  
+    // Calculate remaining savings needed
+    const remainingSavingsNeeded = parseFloat(totalSavingsGoals) - parseFloat(totalSavedAllTime);
+  
+    // Check if remaining budget is sufficient
+    const showWarningValue = parseFloat(normalizedRemainingBudget) < (extrapolatedSpending + remainingSavingsNeeded);
+    setShowWarning(showWarningValue);
+  }
+
   // Fetch exchange rates and currencies from ExchangeRate-API
   const fetchExchangeRates = async (baseCurrency, forceFetch = false) => {
     if (typeof window === 'undefined') return;
@@ -262,6 +348,7 @@ export function GlobalProvider({ children }) {
   useEffect(() => {
     loadDataFromLocal();
     fetchExchangeRates(mainCurrency);
+    checkForWarning();
   }, []);
 
   // Save to local storage anytime these values change
@@ -460,6 +547,10 @@ export function GlobalProvider({ children }) {
     setRemainingBudget(remaining.toFixed(2).toString());
   }, [entries, recurringEntries, exchangeRates, mainCurrency, budget, budgetFrequency]);
 
+  useEffect(() => {
+    checkForWarning();
+  }, [entries, recurringEntries, savingsProjects, remainingBudget, allocatedBudget, budget])
+
   return (
     <GlobalContext.Provider value={{
       entries, setEntries,
@@ -478,6 +569,7 @@ export function GlobalProvider({ children }) {
       loadDataFromLocal,
       exportDataToJson,
       importDataFromJson,
+      showWarning, setShowWarning
     }}>
       {children}
     </GlobalContext.Provider>

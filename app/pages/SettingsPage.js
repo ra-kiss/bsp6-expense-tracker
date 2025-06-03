@@ -16,6 +16,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import TextField from '@mui/material/TextField';
 import { useGlobal } from '../components/GlobalContext';
 import CategoriesModal from '../components/settings/CategoriesModal';
+import Alert from '@mui/material/Alert';
+
 
 export default function SettingsPage() {
   const theme = useTheme();
@@ -23,7 +25,7 @@ export default function SettingsPage() {
   const descriptionStyle = { color: 'text.secondary', fontSize: 13, maxWidth: 300 };
   
   const [categoriesModalOpen, setCategoriesModalOpen] = useState(false);
-  const { currencies, mainCurrency, setMainCurrency, budget, setBudget, budgetFrequency, setBudgetFrequency, exportDataToJson, importDataFromJson } = useGlobal();
+  const { currencies, mainCurrency, setMainCurrency, budget, setBudget, budgetFrequency, setBudgetFrequency, exportDataToJson, importDataFromJson, showWarning } = useGlobal();
 
   const handleChange = (e) => {
     let value = e.target.value.replace(/[^0-9.]/g, ""); // Numbers and decimal only
@@ -45,6 +47,13 @@ export default function SettingsPage() {
     <>
       <GenericTopBar title="Settings" />
       <Box sx={{ ...theme.mixins.toolbar }} />
+          {showWarning && (
+          <Box sx={{ p: 1 }}>
+            <Alert severity="warning" sx={{ mb: 2, position: 'sticky', top: 0, zIndex: 10 }}>
+              Warning: Based on your current spending rate, you may not have enough budget to meet your savings goals.
+            </Alert>
+          </Box>
+          )}
       <Box>
         <Card>
           <CardActionArea>

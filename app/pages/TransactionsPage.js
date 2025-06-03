@@ -18,12 +18,13 @@ import TransactionsFilterModal from '../components/transactions/TransactionsFilt
 import GenericTopBar from "../components/GenericTopBar";
 import TemplateListModal from '../components/transactions/TemplateListModal';
 import { useGlobal } from '../components/GlobalContext';
+import Alert from '@mui/material/Alert';
 import dayjs from 'dayjs';
 import fx from 'money';
 
 export default function TransactionsPage() {
   const theme = useTheme();
-  const { entries, setEntries, recurringEntries, setRecurringEntries, exchangeRates, mainCurrency } = useGlobal();
+  const { entries, setEntries, recurringEntries, setRecurringEntries, exchangeRates, mainCurrency, showWarning } = useGlobal();
   const [sort, setSort] = useState({ type: 'recency', order: 'asc' }); // Earliest first
   const [addListEntryModalOpen, setAddListEntryModalOpen] = useState(false);
   const [addRecurringEntryModalOpen, setAddRecurringEntryModalOpen] = useState(false);
@@ -195,6 +196,13 @@ export default function TransactionsPage() {
         onSort={(type, order) => sortEntries(entries, type, order)}
       />
       <Box sx={{ ...theme.mixins.toolbar }} />
+          {showWarning && (
+          <Box sx={{ p: 1 }}>
+            <Alert severity="warning" sx={{ mb: 2, position: 'sticky', top: 0, zIndex: 10 }}>
+              Warning: Based on your current spending rate, you may not have enough budget to meet your savings goals.
+            </Alert>
+          </Box>
+          )}
       <Box sx={{ mb: 8 }}>
         {displayedTransactions.length > 0 ? (
           displayedTransactions.map((entry, index) => (

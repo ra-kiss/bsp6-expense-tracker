@@ -10,10 +10,12 @@ import { useGlobal } from '../components/GlobalContext';
 import AddProjectEntryModal from '../components/savings/AddProjectEntryModal';
 import SavingsFilterModal from '../components/savings/SavingsFilterModal';
 import ProjectEntry from "../components/savings/ProjectEntry";
+import Alert from '@mui/material/Alert';
+
 
 export default function SavingsPage() {
   const theme = useTheme();
-  const { savingsProjects, setSavingsProjects } = useGlobal();
+  const { savingsProjects, setSavingsProjects, showWarning } = useGlobal();
   const [addProjectEntryModalOpen, setAddProjectEntryModalOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [filter, setFilter] = useState({
@@ -78,6 +80,13 @@ export default function SavingsPage() {
         onSort={(type, order) => sortProjects(savingsProjects, type, order)}
       />
       <Box sx={{ ...theme.mixins.toolbar }} />
+          {showWarning && (
+          <Box sx={{ p: 1 }}>
+            <Alert severity="warning" sx={{ mb: 2, position: 'sticky', top: 0, zIndex: 10 }}>
+              Warning: Based on your current spending rate, you may not have enough budget to meet your savings goals.
+            </Alert>
+          </Box>
+          )}
       <Box>
         {filteredProjects.length > 0 ? (
           filteredProjects.map((entry, index) => (
