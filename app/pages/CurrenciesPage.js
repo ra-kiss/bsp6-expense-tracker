@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import CurrenciesTopBar from '../components/currencies/CurrenciesTopBar';
+import GenericTopBar from '../components/GenericTopBar';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useGlobal } from '../components/GlobalContext';
@@ -49,7 +49,7 @@ export default function CurrenciesPage() {
 
   return (
     <>
-      <CurrenciesTopBar setFilterModalOpen={setFilterModalOpen} />
+      <GenericTopBar title="Currencies" showFilter onFilterClick={() => setFilterModalOpen(true)} />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box>
         {currencyEntries.length > 0 ? (

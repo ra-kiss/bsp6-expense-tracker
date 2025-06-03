@@ -1,7 +1,7 @@
 'use client';
 
 import Box from '@mui/material/Box';
-import HomeTopBar from '../components/home/HomeTopBar';
+import GenericTopBar from '../components/GenericTopBar';
 import StatsModal from '../components/home/StatsModal';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -192,7 +192,7 @@ export default function HomePage() {
 
   return (
     <>
-      <HomeTopBar />
+      <GenericTopBar title="Home" />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box sx={{ p: 1 }}>
         {showWarning && (

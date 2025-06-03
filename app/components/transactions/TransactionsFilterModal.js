@@ -69,15 +69,27 @@ export default function TransactionsFilterModal({ open, onClose, setFilter }) {
       multiple: true,
       initialValue: [],
     },
+    {
+      key: 'isIncome',
+      label: 'By type',
+      options: [
+        { value: 'true', label: 'Income' },
+        { value: 'false', label: 'Expense' },
+      ],
+      multiple: false,
+      initialValue: '',
+    },
   ];
+  
 
   const handleSetFilter = (values) => {
     setFilter({
       category: values.category.length ? values.category : '',
       currency: values.currency.length ? values.currency : '',
       date: values.date ? filters[0].transform(values.date) : '',
+      isIncome: values.isIncome !== '' ? values.isIncome : '',
     });
-  };
+  };  
 
   return (
     <FilterModal

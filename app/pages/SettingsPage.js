@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import SettingsTopBar from '../components/settings/SettingsTopBar';
+import GenericTopBar from '../components/GenericTopBar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -43,7 +43,7 @@ export default function SettingsPage() {
   
   return (
     <>
-      <SettingsTopBar/>
+      <GenericTopBar title="Settings" />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box>
         <Card>

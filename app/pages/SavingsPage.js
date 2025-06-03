@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import SavingsTopBar from '../components/savings/SavingsTopBar';
+import GenericTopBar from '../components/GenericTopBar';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useGlobal } from '../components/GlobalContext';
@@ -20,6 +20,12 @@ export default function SavingsPage() {
     currency: '',
     completion: ''
   });
+
+  const sortOptions = [
+    { type: 'completion', order: 'desc', label: 'Sort by Completion (desc.)' },
+    { type: 'completion', order: 'asc', label: 'Sort by Completion (asc.)' },
+  ];
+
 
   const addEntry = (value, currency, goal, label) => {
     let curValue = value ? value : 0;
@@ -63,7 +69,14 @@ export default function SavingsPage() {
 
   return (
     <>
-      <SavingsTopBar sortProjects={sortProjects} setFilterModalOpen={setFilterModalOpen} />
+      <GenericTopBar
+        title="Savings"
+        showFilter
+        showSort
+        onFilterClick={() => setFilterModalOpen(true)}
+        sortOptions={sortOptions}
+        onSort={(type, order) => sortProjects(savingsProjects, type, order)}
+      />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box>
         {filteredProjects.length > 0 ? (

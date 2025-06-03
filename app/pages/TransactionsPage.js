@@ -14,7 +14,8 @@ import ListEntry from "../components/transactions/ListEntry";
 import RecurringEntry from "../components/transactions/RecurringEntry";
 import AddListEntryModal from "../components/transactions/AddListEntryModal";
 import AddRecurringEntryModal from "../components/transactions/AddRecurringEntryModal";
-import TransactionsTopBar from '../components/transactions/TransactionsTopBar';
+import TransactionsFilterModal from '../components/transactions/TransactionsFilterModal';
+import GenericTopBar from "../components/GenericTopBar";
 import TemplateListModal from '../components/transactions/TemplateListModal';
 import { useGlobal } from '../components/GlobalContext';
 import dayjs from 'dayjs';
@@ -27,10 +28,12 @@ export default function TransactionsPage() {
   const [addListEntryModalOpen, setAddListEntryModalOpen] = useState(false);
   const [addRecurringEntryModalOpen, setAddRecurringEntryModalOpen] = useState(false);
   const [templateListModalOpen, setTemplateListModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [filter, setFilter] = useState({
     category: '',
     currency: '',
-    date: ''
+    date: '',
+    isIncome: ''
   });
   const [pageOffset, setPageOffset] = useState(0); // Track current page offset
   const transactionsPerPage = 10; // Display 10 transactions per page
@@ -40,6 +43,13 @@ export default function TransactionsPage() {
   useEffect(() => {
     sortEntries(entries, sort.type, sort.order);
   }, []);
+
+  const sortOptions = [
+    { type: 'recency', order: 'desc', label: 'Sort by Recency (desc.)' },
+    { type: 'recency', order: 'asc', label: 'Sort by Recency (asc.)' },
+    { type: 'value', order: 'desc', label: 'Sort by Value (desc.)' },
+    { type: 'value', order: 'asc', label: 'Sort by Value (asc.)' },
+  ];
 
   // Parse date string (D/M/YYYY) to Date object
   const parseDate = (dateString) => {
@@ -158,10 +168,13 @@ export default function TransactionsPage() {
 
   // Apply filters
   const filteredTransactions = allTransactions.filter(entry =>
-    Object.entries(filter).every(([key, value]) =>
-      value === '' || (key === 'date' ? compareDates(entry[key], value) : value.includes(entry[key]))
-    )
-  );
+    Object.entries(filter).every(([key, value]) => {
+      if (value === '') return true;
+      if (key === 'date') return compareDates(entry[key], value);
+      if (key === 'isIncome') return String(entry.isIncome) === String(value); // Compare as strings for simplicity
+      return value.includes(entry[key]);
+    })
+  );  
 
   // Get current pageParser
   const displayedTransactions = filteredTransactions.slice(
@@ -171,7 +184,16 @@ export default function TransactionsPage() {
 
   return (
     <>
-      <TransactionsTopBar sortEntries={sortEntries} setFilter={setFilter} />
+      {/* <TransactionsTopBar sortEntries={sortEntries} setFilter={setFilter} /> */}
+      <TransactionsFilterModal open={filterModalOpen} setFilter={setFilter} onClose={() => setFilterModalOpen(false)} />
+      <GenericTopBar
+        title="Transactions"
+        showFilter
+        showSort
+        onFilterClick={() => setFilterModalOpen(true)}
+        sortOptions={sortOptions}
+        onSort={(type, order) => sortEntries(entries, type, order)}
+      />
       <Box sx={{ ...theme.mixins.toolbar }} />
       <Box sx={{ mb: 8 }}>
         {displayedTransactions.length > 0 ? (
