@@ -84,7 +84,7 @@ export function GlobalProvider({ children }) {
       recurringEntries,
       savingsProjects,
       currencies,
-      mainCurrency創新者,
+      mainCurrency,
       budget,
       budgetFrequency,
       categories,
