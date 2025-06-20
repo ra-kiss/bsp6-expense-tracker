@@ -228,7 +228,8 @@ export function GlobalProvider({ children }) {
     const remainingSavingsNeeded = parseFloat(totalSavingsGoals) - parseFloat(totalSavedAllTime);
   
     // Check if remaining budget is sufficient
-    const showWarningValue = parseFloat(normalizedRemainingBudget) < (extrapolatedSpending + remainingSavingsNeeded);
+    const showWarningValue = savingsProjects.length > 0 && totalSavingsGoals > 0 &&
+      parseFloat(normalizedRemainingBudget) < (extrapolatedSpending + remainingSavingsNeeded);
     setShowWarning(showWarningValue);
   }
 
