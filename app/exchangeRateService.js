@@ -2,7 +2,7 @@ import { API_KEY, currencySymbols } from './appConstants';
 
 // Default rates to use as a fallback if the API call fails
 const fallbackRates = {
-  USD: 1, EUR: 0.85, BTC: 0.000017, JPY: 110.0,
+  USD: 1, EUR: 0.85, JPY: 110.0,
   GBP: 0.79, AUD: 1.35, CAD: 1.27, CHF: 0.91, CNY: 6.47,
 };
 

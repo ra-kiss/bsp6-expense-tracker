@@ -5,8 +5,9 @@ import { useGlobal } from '../GlobalContext';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BaseEntryCard from '../BaseEntryCard';
 
+
 export default function CurrencyEntry({ index, entryValues, onClick }) {
-  const { custom, valueInMain, label } = entryValues;
+  const { custom, oneMainValue, label } = entryValues;
   const { currencies, mainCurrency } = useGlobal();
 
   const mainCurrencyLabel = currencies.find(currency => currency.value === mainCurrency)?.label || 'Unknown';
@@ -20,7 +21,7 @@ export default function CurrencyEntry({ index, entryValues, onClick }) {
             <b>{label}</b>
           </Typography>
           <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
-            {mainCurrencyLabel} = <b>{valueInMain}{label}</b>
+            1{mainCurrencyLabel} = <b>{oneMainValue}{label}</b>
           </Typography>
         </div>
         {custom && <AutoAwesomeIcon />}

@@ -5,7 +5,6 @@ export const API_KEY = '5e353c9666b3c058c7ceeab6';
 export const currencySymbols = {
   USD: '$ USD',
   EUR: '€ EUR',
-  BTC: '₿ BTC',
   JPY: '¥ JPY',
   GBP: '£ GBP',
   AUD: '$ AUD',
