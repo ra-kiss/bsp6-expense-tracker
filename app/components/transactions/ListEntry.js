@@ -16,12 +16,13 @@ export default function ListEntry({ index, entryValues, showDate = true }) {
 
   return (
     <>
-      <EditListEntryModal
+    { showDate && (<EditListEntryModal
         open={editListEntryModalOpen}
         setOpen={setEditListEntryModalOpen}
         entryValues={entryValues}
         index={index}
-      />
+      />)
+    }
       <BaseEntryCard onClick={() => setEditListEntryModalOpen(true)}>
         {/* All unique content goes here */}
         <Typography sx={{ fontWeight: "bold", fontSize: 20, color: isIncome ? 'success.main' : 'error.main' }} component="div">
