@@ -9,6 +9,22 @@ import { fetchExchangeRates as fetchRatesService } from '../exchangeRateService'
 
 const GlobalContext = createContext();
 
+const recalculateLocalRates = (newBase, currentRates) => {
+  const conversionFactor = currentRates[newBase];
+  const newRates = {};
+
+  if (!conversionFactor) {
+    // console.error(`Cannot recalculate rates, new base "${newBase}" not found in current rates.`);
+    return currentRates; 
+  }
+
+  for (const currency in currentRates) {
+    newRates[currency] = currentRates[currency] / conversionFactor;
+  }
+  
+  return newRates;
+};
+
 export function GlobalProvider({ children }) {
   const appState = useAppState();
   const {
@@ -34,6 +50,9 @@ export function GlobalProvider({ children }) {
       setters.setTemplates(localData.templates || []);
       setters.setRemainingBudget(localData.remainingBudget || localData.budget || '100');
       setLastRatesUpdate(localData.lastRatesUpdate || null);
+    }
+    if (!localData || localData.exchangeRates == {}){
+      updateRates();
     }
   }, []);
 
@@ -74,7 +93,8 @@ export function GlobalProvider({ children }) {
   }, [lastRatesUpdate, setExchangeRates, setCurrencies, setLastRatesUpdate]);
 
   useEffect(() => {
-    updateRates();
+    const newRates = recalculateLocalRates(mainCurrency, exchangeRates);
+    setExchangeRates(newRates);
   }, [mainCurrency])
 
   const exportDataToJson = () => {
