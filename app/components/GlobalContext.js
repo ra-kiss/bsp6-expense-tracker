@@ -54,24 +54,28 @@ export function GlobalProvider({ children }) {
       lastRatesUpdate: appState.lastRatesUpdate,
     });
   }, [appState, saveLocalData]);
+
+  const updateRates = async () => {
+    const { rates, currencies } = await fetchRatesService(mainCurrency);
+    setExchangeRates(rates);
+    setCurrencies(currencies);
+    setLastRatesUpdate(dayjs().toISOString());
+    fx.base = mainCurrency;
+    fx.rates = rates;
+  }
   
   // Effect to fetch exchange rates
   useEffect(() => {
-    const getRates = async () => {
-      if (typeof window === 'undefined') return;
-      // Avoid fetching if rates were updated recently
-      if (lastRatesUpdate && dayjs().diff(dayjs(lastRatesUpdate), 'hour') < 24) {
-        return;
-      }
-      const { rates, currencies } = await fetchRatesService(mainCurrency);
-      setExchangeRates(rates);
-      setCurrencies(currencies);
-      setLastRatesUpdate(dayjs().toISOString());
-      fx.base = mainCurrency;
-      fx.rates = rates;
-    };
-    getRates();
-  }, [mainCurrency, lastRatesUpdate, setExchangeRates, setCurrencies, setLastRatesUpdate]);
+    if (typeof window === 'undefined') return;
+    if (lastRatesUpdate && dayjs().diff(dayjs(lastRatesUpdate), 'hour') < 24) {
+      return;
+    }
+    updateRates();
+  }, [lastRatesUpdate, setExchangeRates, setCurrencies, setLastRatesUpdate]);
+
+  useEffect(() => {
+    updateRates();
+  }, [mainCurrency])
 
   const exportDataToJson = () => {
     const dataToExport = {
