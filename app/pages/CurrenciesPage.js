@@ -112,6 +112,7 @@ export default function CurrenciesPage() {
           open={editCurrencyModalOpen}
           setOpen={setEditCurrencyModalOpen}
           entryValues={entryToEdit || {}}
+          editValue={editIndex}
         />
         <CurrenciesFilterModal
           open={filterModalOpen}

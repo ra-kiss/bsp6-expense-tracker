@@ -2,7 +2,8 @@
 
 import Typography from '@mui/material/Typography';
 import { useGlobal } from '../GlobalContext';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+// import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import EditIcon from '@mui/icons-material/Edit';
 import BaseEntryCard from '../BaseEntryCard';
 
 
@@ -24,7 +25,7 @@ export default function CurrencyEntry({ index, entryValues, onClick }) {
             1{mainCurrencyLabel} = <b>{oneMainValue}{label}</b>
           </Typography>
         </div>
-        {custom && <AutoAwesomeIcon />}
+        {custom && <EditIcon />}
       </div>
     </BaseEntryCard>
   );
