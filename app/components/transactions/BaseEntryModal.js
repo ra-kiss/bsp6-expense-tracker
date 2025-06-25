@@ -20,11 +20,9 @@ const boxStyle = {
   display: 'flex', alignItems: 'flex-end', mb: 2, width: '100%'
 };
 
-// Base component that handles all common fields and logic
-export default function BaseEntryModal({ open, onClose, onSubmit, initialValues, onDelete, title, children, customActions }) {
+export default function BaseEntryModal({ open, onClose, onSubmit, initialValues, onDelete, title, children, onSaveAsTemplate }) {
   const { currencies, categories } = useGlobal();
 
-  // State for all common fields
   const [valueInput, setValueInput] = useState('');
   const [currencyInput, setCurrencyInput] = useState('');
   const [categoryInput, setCategoryInput] = useState('');
@@ -32,7 +30,6 @@ export default function BaseEntryModal({ open, onClose, onSubmit, initialValues,
   const [notesInput, setNotesInput] = useState('');
   const [isIncome, setIsIncome] = useState(false);
 
-  // Effect to reset all fields when the modal opens with new initial values
   useEffect(() => {
     if (open) {
       setValueInput(initialValues.value || '');
@@ -44,7 +41,6 @@ export default function BaseEntryModal({ open, onClose, onSubmit, initialValues,
     }
   }, [open, initialValues]);
 
-  // Shared handler for sanitizing the currency value input
   const handleValueChange = (e) => {
     let value = e.target.value.replace(/[^0-9.]/g, "");
     const parts = value.split(".");
@@ -54,20 +50,30 @@ export default function BaseEntryModal({ open, onClose, onSubmit, initialValues,
     }
     setValueInput(value);
   };
+  
+  const getCurrentValues = () => ({
+    value: valueInput,
+    currency: currencyInput,
+    category: categoryInput,
+    date: dateInput,
+    notes: notesInput,
+    isIncome: isIncome,
+  });
 
-  // Shared submit handler that gathers data from common fields
   const handleSubmit = () => {
+    const currentValues = getCurrentValues();
     const baseEntry = {
-      value: new Decimal(valueInput || "0").toFixed(2),
-      currency: currencyInput,
-      category: categoryInput,
-      date: dateInput ? `${dateInput.$D}/${dateInput.$M + 1}/${dateInput.$y}` : '',
-      notes: notesInput,
-      isIncome: isIncome,
+      ...currentValues,
+      value: new Decimal(currentValues.value || "0").toFixed(2),
+      date: currentValues.date ? `${currentValues.date.$D}/${currentValues.date.$M + 1}/${currentValues.date.$y}` : '',
     };
-    // The onSubmit prop is now responsible for adding any unique fields
     onSubmit(baseEntry);
     onClose();
+  };
+
+  const handleSaveTemplateClick = () => {
+    const currentValues = getCurrentValues();
+    onSaveAsTemplate(currentValues);
   };
 
   return (
@@ -77,7 +83,6 @@ export default function BaseEntryModal({ open, onClose, onSubmit, initialValues,
           {title}
         </Typography>
 
-        {/* --- Common Fields --- */}
         <Box sx={boxStyle}>
           <TextField label="Value" variant="outlined" type="text" value={valueInput} onChange={handleValueChange} sx={{ width: '100%' }}/>
         </Box>
@@ -96,18 +101,19 @@ export default function BaseEntryModal({ open, onClose, onSubmit, initialValues,
           </Button>
         </Box>
 
-        {/* This is where unique fields (like the "Repeat" dropdown) will be injected */}
         {children}
 
         <Box sx={boxStyle}>
           <TextField label="Notes" variant="outlined" multiline minRows={2} value={notesInput} onChange={(e) => setNotesInput(e.target.value)} sx={{ width: '100%' }} />
         </Box>
         
-        {/* --- Action Buttons --- */}
         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', gap: 1 }}>
           <Button variant="contained" onClick={handleSubmit}>Submit</Button>
-          {/* This is where custom buttons (like "Save as Template") will be injected */}
-          {customActions}
+          {onSaveAsTemplate && (
+            <Button variant="outlined" color="primary" onClick={handleSaveTemplateClick}>
+              Save as Template
+            </Button>
+          )}
           {onDelete && (
             <Button variant="outlined" color="error" onClick={() => { onDelete(); onClose(); }}>
               Delete
