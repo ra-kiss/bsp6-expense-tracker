@@ -9,54 +9,15 @@ import { fetchExchangeRates as fetchRatesService } from '../exchangeRateService'
 
 const GlobalContext = createContext();
 
-const recalculateLocalRates = (newBase, currentRates) => {
-  const conversionFactor = currentRates[newBase];
-  const newRates = {};
-
-  if (!conversionFactor) {
-    // console.error(`Cannot recalculate rates, new base "${newBase}" not found in current rates.`);
-    return currentRates; 
-  }
-
-  for (const currency in currentRates) {
-    newRates[currency] = currentRates[currency] / conversionFactor;
-  }
-  
-  return newRates;
-};
-
 export function GlobalProvider({ children }) {
   const appState = useAppState();
   const {
-    localData, saveLocalData, mainCurrency, setMainCurrency, setExchangeRates,
+    saveLocalData, mainCurrency, setMainCurrency, setExchangeRates,
     setCurrencies, setLastRatesUpdate, lastRatesUpdate, exchangeRates, ...setters
   } = appState;
 
-  // Pass state and setters to the calculation hook
   useBudgetCalculations(appState, setters);
 
-  // Effect to load data from local storage on initial mount
-  useEffect(() => {
-    if (localData) {
-      setters.setEntries(localData.entries || []);
-      setters.setRecurringEntries(localData.recurringEntries || []);
-      setters.setSavingsProjects(localData.savingsProjects || []);
-      setCurrencies(localData.currencies || []);
-      setMainCurrency(localData.mainCurrency || 'USD');
-      setters.setBudget(localData.budget || '100');
-      setters.setBudgetFrequency(localData.budgetFrequency || 'monthly');
-      setters.setCategories(localData.categories || ['Groceries', 'Housing', 'Gas', 'Other']);
-      setExchangeRates(localData.exchangeRates || {});
-      setters.setTemplates(localData.templates || []);
-      setters.setRemainingBudget(localData.remainingBudget || localData.budget || '100');
-      setLastRatesUpdate(localData.lastRatesUpdate || null);
-    }
-    if (!localData || localData.exchangeRates == {}){
-      updateRates();
-    }
-  }, []);
-
-  // Effect to save all state to local storage whenever it changes
   useEffect(() => {
     saveLocalData({
       entries: appState.entries,
@@ -71,31 +32,57 @@ export function GlobalProvider({ children }) {
       templates: appState.templates,
       remainingBudget: appState.remainingBudget,
       lastRatesUpdate: appState.lastRatesUpdate,
+      allocatedBudget: appState.allocatedBudget,
     });
-  }, [appState, saveLocalData]);
+  }, [
+      appState.entries, appState.recurringEntries, appState.savingsProjects,
+      appState.currencies, appState.mainCurrency, appState.budget,
+      appState.budgetFrequency, appState.categories, appState.exchangeRates,
+      appState.templates, appState.remainingBudget, appState.lastRatesUpdate,
+      appState.allocatedBudget, saveLocalData
+  ]);
 
-  const updateRates = async () => {
-    const { rates, currencies } = await fetchRatesService(mainCurrency);
-    setExchangeRates(rates);
-    setCurrencies(currencies);
-    setLastRatesUpdate(dayjs().toISOString());
-    fx.base = mainCurrency;
-    fx.rates = rates;
-  }
+  const updateRates = async (base) => {
+    if (!base) return;
+    try {
+      const { rates, currencies } = await fetchRatesService(base);
+      setExchangeRates(rates);
+      setCurrencies(currencies);
+      setLastRatesUpdate(dayjs().toISOString());
+    } catch (error) {
+      console.error("Failed to update rates:", error);
+    }
+  };
   
-  // Effect to fetch exchange rates
+  // Effect 1: Fetch new rates ONLY when mainCurrency changes.
+  // This is the most critical fix. It directly links the cause (currency change)
+  // to the effect (fetching new rates for that currency).
+  useEffect(() => {
+    if (mainCurrency) {
+      updateRates(mainCurrency);
+    }
+  }, [mainCurrency]); // <-- The dependency is ONLY mainCurrency.
+
+  // Effect 2: Periodically check if rates are stale on initial load.
+  // This handles the 24-hour update logic without interfering with currency changes.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (lastRatesUpdate && dayjs().diff(dayjs(lastRatesUpdate), 'hour') < 24) {
-      return;
-    }
-    updateRates();
-  }, [lastRatesUpdate, setExchangeRates, setCurrencies, setLastRatesUpdate]);
+    const ratesAreStale = !lastRatesUpdate || dayjs().diff(dayjs(lastRatesUpdate), 'hour') >= 24;
 
+    if (ratesAreStale) {
+      updateRates(mainCurrency);
+    }
+  }, []); // <-- Run only once on mount to check for staleness.
+
+  // Effect 3: Always keep the 'money' library (fx) in sync with the React state.
+  // The React state is the single source of truth. This effect ensures
+  // any external libraries reflect that truth.
   useEffect(() => {
-    const newRates = recalculateLocalRates(mainCurrency, exchangeRates);
-    setExchangeRates(newRates);
-  }, [mainCurrency])
+    if (mainCurrency && exchangeRates && Object.keys(exchangeRates).length > 0) {
+      fx.base = mainCurrency;
+      fx.rates = exchangeRates;
+    }
+  }, [mainCurrency, exchangeRates]); // <-- Syncs whenever rates or base currency change.
 
   const exportDataToJson = () => {
     const dataToExport = {
@@ -133,7 +120,6 @@ export function GlobalProvider({ children }) {
         try {
           const importedData = JSON.parse(e.target.result);
 
-          // Use setters from the appState to update the context state
           setters.setEntries(importedData.entries || []);
           setters.setRecurringEntries(importedData.recurringEntries || []);
           setters.setSavingsProjects(importedData.savingsProjects || []);
@@ -157,7 +143,6 @@ export function GlobalProvider({ children }) {
 
     input.click();
   };
-
 
   return (
     <GlobalContext.Provider value={{
